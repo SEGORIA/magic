@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://magic-all-stars.vercel.app/sitemap.xml
+Sitemap: https://magic-woad.vercel.app/sitemap.xml
