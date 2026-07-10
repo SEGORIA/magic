@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="es-CO">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Magic All Stars | Escuela de Porrismo</title>
+<meta name="description" content="Magic All Stars: escuela de porrismo (cheerleading) recreativo y competitivo en Villamaría, Caldas. Coaches certificados, grupos por edad y clase de prueba gratis.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://magic-all-stars.vercel.app/">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Magic All Stars">
+<meta property="og:title" content="Magic All Stars | Escuela de Porrismo">
+<meta property="og:description" content="Formamos campeonas dentro y fuera del tapete. Disciplina, acrobacia, baile y trabajo en equipo para niñas, niños y jóvenes.">
+<meta property="og:image" content="https://magic-all-stars.vercel.app/assets/img/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://magic-all-stars.vercel.app/">
+<meta property="og:locale" content="es_CO">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Magic All Stars | Escuela de Porrismo">
+<meta name="twitter:description" content="Formamos campeonas dentro y fuera del tapete. Agenda tu clase de prueba gratis.">
+<meta name="twitter:image" content="https://magic-all-stars.vercel.app/assets/img/og-image.png">
+
+<!-- Favicons -->
+<link rel="icon" type="image/svg+xml" href="/assets/img/magic-allstars-logo.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/img/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/img/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#0D0D0D">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Fredoka:wght@500;600;700&family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SportsActivityLocation",
+  "name": "Magic All Stars",
+  "alternateName": "Magic All Stars Escuela de Porrismo",
+  "description": "Escuela de porrismo (cheerleading) recreativo y competitivo para niñas, niños y jóvenes en Villamaría, Caldas, Colombia.",
+  "image": "https://magic-all-stars.vercel.app/assets/img/og-image.png",
+  "url": "https://magic-all-stars.vercel.app/",
+  "telephone": "+573228575070",
+  "email": "magiccheersallstars@gmail.com",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Cra. 9 #6 no 5",
+    "addressLocality": "Villamaría",
+    "addressRegion": "Caldas",
+    "addressCountry": "CO"
+  },
+  "sameAs": [
+    "https://www.instagram.com/magic_all_stars",
+    "https://www.tiktok.com/@magiccheersallsta"
+  ]
+}
+</script>
+
+<style>
+  :root{
+    --pink:#E6127D;
+    --pink-dark:#B8005F;
+    --pink-light:#FF5FA8;
+    --black:#0D0D0D;
+    --silver:#C9CDD2;
+    --silver-light:#F1F2F4;
+    --white:#FFFFFF;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'Poppins',sans-serif;color:var(--black);background:var(--white);line-height:1.6;overflow-x:hidden;}
+  h1,h2,h3{font-weight:800;}
+  .script{font-family:'Pacifico',cursive;}
+  a{text-decoration:none;color:inherit;}
+  img{max-width:100%;display:block;}
+  .container{max-width:1180px;margin:0 auto;padding:0 24px;}
+  .btn{
+    display:inline-block;padding:15px 34px;border-radius:50px;font-weight:700;
+    font-size:15px;letter-spacing:.3px;transition:transform .2s ease, box-shadow .2s ease;
+    cursor:pointer;border:none;
+  }
+  .btn-primary{background:linear-gradient(135deg,var(--pink) 0%,var(--pink-dark) 100%);color:#fff;box-shadow:0 8px 20px rgba(230,18,125,.35);}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(230,18,125,.45);}
+  .btn-outline{background:transparent;border:2px solid var(--white);color:var(--white);}
+  .btn-outline:hover{background:var(--white);color:var(--pink-dark);}
+  .eyebrow{
+    display:inline-block;font-size:13px;font-weight:700;letter-spacing:2px;
+    text-transform:uppercase;color:var(--pink);margin-bottom:12px;
+  }
+  .placeholder-note{
+    font-size:11px;color:#9aa0a6;font-style:italic;margin-top:6px;
+  }
+
+  /* ---------- SKIP LINK ---------- */
+  .skip-link{
+    position:absolute;left:-999px;top:0;background:#fff;color:#000;
+    padding:12px 20px;z-index:1000;border-radius:0 0 8px 0;font-weight:700;font-size:14px;
+  }
+  .skip-link:focus{left:0;}
+
+  /* ---------- NAV ---------- */
+  header{
+    position:fixed;top:0;left:0;right:0;z-index:100;
+    background:rgba(13,13,13,.92);backdrop-filter:blur(8px);
+    padding:14px 0;
+  }
+  nav{display:flex;align-items:center;justify-content:space-between;position:relative;}
+  .logo-word{font-family:'Fredoka',sans-serif;font-weight:600;font-size:23px;color:#fff;letter-spacing:.2px;}
+  .logo-word span{color:var(--pink-light);}
+  .logo-sub{font-family:'Poppins',sans-serif;font-weight:600;font-size:9px;letter-spacing:3px;color:var(--silver);display:block;margin-top:2px;}
+  .nav-links{display:flex;gap:32px;list-style:none;}
+  .nav-links a{color:#fff;font-size:14px;font-weight:600;transition:color .2s;}
+  .nav-links a:hover{color:var(--pink-light);}
+  .nav-cta{display:flex;align-items:center;gap:20px;}
+  .nav-cta-mobile{display:none;}
+  .burger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:6px;}
+  .burger span{width:26px;height:2px;background:#fff;transition:transform .25s ease, opacity .25s ease;}
+  .burger[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+  .burger[aria-expanded="true"] span:nth-child(2){opacity:0;}
+  .burger[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+  .brand{display:flex;align-items:center;gap:12px;}
+
+  /* ---------- ANIMATED LOGO BADGE ---------- */
+  .badge-wrap{
+    position:relative;display:block;transform-origin:center;
+    animation:badgeEnter 1.1s cubic-bezier(.22,1,.36,1) both,
+              badgeFloat 5s ease-in-out .9s infinite,
+              badgeGlow 3.2s ease-in-out .9s infinite;
+  }
+  .badge-svg{width:100%;height:100%;display:block;overflow:visible;object-fit:contain;}
+  .badge-shine-mask{
+    position:relative;width:100%;height:100%;overflow:hidden;
+    -webkit-clip-path:inset(0 round 32%);
+    clip-path:inset(0 round 32%);
+  }
+  .badge-shine{
+    position:absolute;top:-25%;left:-60%;width:22%;height:150%;
+    background:linear-gradient(75deg, transparent 0%, rgba(255,255,255,.55) 45%, transparent 100%);
+    transform:skewX(-20deg);mix-blend-mode:screen;pointer-events:none;
+    animation:shineSweep 3.6s ease-in-out infinite;
+  }
+  .mini-spark{position:absolute;color:#FF6FBF;pointer-events:none;text-shadow:0 0 8px rgba(255,111,191,.9);animation:sparkTwinkle 2.4s ease-in-out infinite;}
+  .mini-spark::before{content:"✦";}
+  .s1{top:0%;right:8%;font-size:20px;animation-delay:.2s;}
+  .s2{bottom:14%;left:-2%;font-size:14px;animation-delay:.9s;}
+  .s3{top:22%;left:-6%;font-size:11px;animation-delay:1.6s;}
+  .s4{bottom:2%;right:16%;font-size:15px;animation-delay:1.2s;}
+
+  @keyframes badgeEnter{
+    0%{opacity:0;transform:scale(.45) rotate(-35deg);}
+    70%{opacity:1;transform:scale(1.08) rotate(5deg);}
+    100%{opacity:1;transform:scale(1) rotate(0);}
+  }
+  @keyframes badgeFloat{
+    0%,100%{transform:translateY(0);}
+    50%{transform:translateY(-12px);}
+  }
+  @keyframes badgeGlow{
+    0%,100%{filter:drop-shadow(0 10px 22px rgba(0,0,0,.35)) drop-shadow(0 0 16px rgba(255,79,163,.35));}
+    50%{filter:drop-shadow(0 10px 22px rgba(0,0,0,.35)) drop-shadow(0 0 38px rgba(255,79,163,.75));}
+  }
+  @keyframes shineSweep{
+    0%{left:-60%;opacity:0;}
+    10%{opacity:.9;}
+    45%{left:130%;opacity:0;}
+    100%{left:130%;opacity:0;}
+  }
+  @keyframes sparkTwinkle{
+    0%,100%{opacity:.2;transform:scale(.6);}
+    50%{opacity:1;transform:scale(1.15);}
+  }
+  .nav-badge{width:46px;height:46px;}
+
+  /* ---------- SCROLL REVEAL ---------- */
+  [data-reveal]{
+    opacity:0;transform:translateY(26px);
+    transition:opacity .7s ease, transform .7s ease;
+    transition-delay:calc(var(--i, 0) * 90ms);
+  }
+  [data-reveal].is-visible{opacity:1;transform:translateY(0);}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;min-height:100vh;min-height:100svh;display:flex;align-items:center;
+    background:radial-gradient(ellipse at 30% 20%, #2a0018 0%, var(--black) 55%),
+               linear-gradient(160deg, var(--black) 0%, #1a0010 100%);
+    overflow:hidden;padding-top:90px;
+  }
+  .hero::before{
+    content:"";position:absolute;inset:0;
+    background-image:radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,.6) 0%, transparent 60%),
+      radial-gradient(2px 2px at 80% 20%, rgba(255,95,168,.7) 0%, transparent 60%),
+      radial-gradient(1.5px 1.5px at 60% 70%, rgba(255,255,255,.5) 0%, transparent 60%),
+      radial-gradient(2px 2px at 40% 80%, rgba(255,95,168,.6) 0%, transparent 60%),
+      radial-gradient(1.5px 1.5px at 90% 60%, rgba(255,255,255,.5) 0%, transparent 60%),
+      radial-gradient(2px 2px at 10% 65%, rgba(255,95,168,.5) 0%, transparent 60%);
+    opacity:.9;pointer-events:none;
+  }
+  .hero-star{
+    position:absolute;opacity:.10;
+  }
+  .hero-star svg{width:100%;height:100%;}
+  .star-1{width:420px;height:420px;top:-120px;right:-100px;}
+  .star-2{width:220px;height:220px;bottom:-40px;left:-60px;}
+  .hero-grid{position:relative;z-index:2;display:grid;grid-template-columns:1.15fr .85fr;gap:50px;align-items:center;}
+  .hero-badge{display:flex;justify-content:center;align-items:center;}
+  .hero-badge-inner{width:320px;height:320px;}
+  .hero-content{max-width:680px;}
+  .hero-content .eyebrow{color:var(--pink-light);}
+  .hero-content h1{
+    font-size:56px;line-height:1.08;color:#fff;margin-bottom:20px;
+  }
+  .hero-content h1 em{
+    font-family:'Fredoka',sans-serif;font-weight:600;font-style:normal;color:var(--pink-light);
+    display:block;font-size:.62em;letter-spacing:.3px;margin-top:6px;
+  }
+  .hero-content p{color:var(--silver-light);font-size:17px;max-width:520px;margin-bottom:32px;}
+  .hero-btns{display:flex;gap:16px;flex-wrap:wrap;}
+  .hero-stats{
+    position:relative;z-index:2;display:flex;gap:48px;margin-top:64px;flex-wrap:wrap;
+  }
+  .hero-stats div{color:#fff;}
+  .hero-stats strong{display:block;font-size:34px;font-family:'Pacifico',cursive;color:var(--pink-light);}
+  .hero-stats span{font-size:12px;letter-spacing:1px;color:var(--silver);text-transform:uppercase;}
+
+  /* ---------- SECTION GENERIC ---------- */
+  section{padding:100px 0;}
+  .section-head{max-width:640px;margin:0 auto 60px;text-align:center;}
+  .section-head h2{font-size:38px;margin-bottom:16px;}
+  .section-head p{color:#555;font-size:16px;}
+  .bg-light{background:var(--silver-light);}
+  .bg-dark{background:var(--black);color:#fff;}
+  .bg-dark .section-head p{color:var(--silver);}
+
+  /* ---------- SOBRE NOSOTROS ---------- */
+  .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;}
+  .about-media{
+    aspect-ratio:4/5;border-radius:24px;
+    background:linear-gradient(135deg,var(--pink) 0%,var(--pink-dark) 60%,var(--black) 100%);
+    position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;
+  }
+  .about-media .star-icon{width:120px;height:120px;opacity:.85;}
+  .about-media::after{
+    content:"Espacio para foto / video del equipo";
+    position:absolute;bottom:20px;left:20px;right:20px;color:#fff;font-size:12px;
+    font-style:italic;opacity:.75;text-align:center;
+  }
+  .about-text h2{font-size:34px;margin-bottom:18px;}
+  .about-text p{color:#444;margin-bottom:16px;}
+  .value-row{display:flex;gap:16px;margin-top:28px;flex-wrap:wrap;}
+  .value-chip{
+    background:#fff;border:1.5px solid #eee;border-radius:14px;padding:16px 20px;
+    flex:1 1 140px;box-shadow:0 4px 14px rgba(0,0,0,.04);
+  }
+  .value-chip strong{display:block;color:var(--pink);font-size:14px;margin-bottom:4px;}
+  .value-chip span{font-size:12px;color:#666;}
+
+  /* ---------- PROGRAMAS ---------- */
+  .programs-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;}
+  .program-card{
+    background:#fff;border-radius:20px;padding:32px 24px;text-align:center;
+    box-shadow:0 6px 24px rgba(0,0,0,.06);border-top:4px solid var(--pink);
+    transition:transform .25s ease;
+  }
+  .program-card:hover{transform:translateY(-8px);}
+  .program-icon{
+    width:64px;height:64px;margin:0 auto 18px;border-radius:50%;
+    background:linear-gradient(135deg,var(--pink),var(--pink-dark));
+    display:flex;align-items:center;justify-content:center;
+  }
+  .program-icon svg{width:30px;height:30px;fill:#fff;}
+  .program-card h3{font-size:18px;margin-bottom:8px;}
+  .program-card p{font-size:13px;color:#666;margin-bottom:14px;}
+  .program-card .age{
+    font-size:11px;font-weight:700;letter-spacing:1px;color:var(--pink-dark);
+    text-transform:uppercase;
+  }
+
+  /* ---------- LOGROS ---------- */
+  .achieve-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:32px;text-align:center;}
+  .achieve-grid strong{
+    display:block;font-family:'Pacifico',cursive;font-size:46px;color:var(--pink-light);
+  }
+  .achieve-grid span{font-size:13px;letter-spacing:1px;text-transform:uppercase;color:var(--silver);}
+  .trophy-row{display:flex;justify-content:center;gap:14px;margin-top:50px;flex-wrap:wrap;}
+  .trophy-row .badge{
+    background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);
+    border-radius:12px;padding:10px 18px;font-size:12px;color:var(--silver);
+  }
+
+  /* ---------- TESTIMONIOS ---------- */
+  .testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;}
+  .testi-card{
+    background:var(--silver-light);border-radius:18px;padding:30px;position:relative;
+  }
+  .testi-card::before{
+    content:"\201C";font-family:Georgia,serif;font-size:60px;color:var(--pink);
+    position:absolute;top:10px;left:20px;opacity:.25;
+  }
+  .testi-card p{font-size:14px;color:#444;margin-bottom:18px;position:relative;z-index:1;}
+  .testi-person{display:flex;align-items:center;gap:12px;}
+  .testi-avatar{
+    width:42px;height:42px;border-radius:50%;
+    background:linear-gradient(135deg,var(--pink),var(--pink-dark));
+  }
+  .testi-person strong{font-size:13px;display:block;}
+  .testi-person span{font-size:11px;color:#888;}
+
+  /* ---------- GALERIA ---------- */
+  .gallery-grid{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:140px;gap:14px;}
+  .gallery-grid div{
+    border-radius:14px;background:linear-gradient(135deg,var(--pink),var(--black));
+    opacity:.85;
+  }
+  .gallery-grid div:nth-child(2){background:linear-gradient(135deg,var(--black),var(--pink-dark));}
+  .gallery-grid div:nth-child(3){grid-row:span 2;background:linear-gradient(135deg,var(--pink-dark),var(--pink-light));}
+  .gallery-grid div:nth-child(5){grid-column:span 2;background:linear-gradient(135deg,var(--black),var(--pink));}
+  .gallery-note{text-align:center;font-size:12px;color:#9aa0a6;font-style:italic;margin-top:18px;}
+
+  /* ---------- CTA FINAL ---------- */
+  .cta-final{
+    background:linear-gradient(135deg,var(--pink) 0%,var(--pink-dark) 100%);
+    border-radius:28px;padding:64px 48px;display:flex;justify-content:space-between;
+    align-items:center;gap:40px;flex-wrap:wrap;color:#fff;
+  }
+  .cta-final h2{font-size:32px;margin-bottom:10px;}
+  .cta-final p{opacity:.9;font-size:15px;}
+  .cta-final .btn-outline{border-color:#fff;}
+
+  /* ---------- CONTACTO ---------- */
+  .contact-wrap{display:grid;grid-template-columns:1fr 1fr;gap:60px;}
+  .contact-info h2{font-size:32px;margin-bottom:16px;}
+  .contact-info p{color:#555;margin-bottom:28px;}
+  .info-item{display:flex;gap:14px;margin-bottom:20px;align-items:flex-start;}
+  .info-icon{
+    width:38px;height:38px;border-radius:10px;background:var(--silver-light);
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  }
+  .info-icon svg{width:18px;height:18px;fill:var(--pink);}
+  .info-item strong{display:block;font-size:14px;}
+  .info-item span{font-size:13px;color:#666;}
+  form{background:var(--silver-light);border-radius:20px;padding:36px;}
+  .form-row{margin-bottom:18px;}
+  .form-row label{display:block;font-size:12px;font-weight:700;margin-bottom:6px;color:#333;}
+  .form-row input, .form-row select, .form-row textarea{
+    width:100%;padding:13px 16px;border-radius:10px;border:1.5px solid #e2e2e2;
+    font-family:'Poppins',sans-serif;font-size:14px;background:#fff;
+  }
+  .form-row input:focus, .form-row select:focus, .form-row textarea:focus{
+    outline:none;border-color:var(--pink);
+  }
+  form .btn-primary{width:100%;text-align:center;margin-top:8px;}
+  #form-note{
+    display:none;margin-top:14px;font-size:13px;font-weight:600;color:var(--pink-dark);
+    text-align:center;
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer{background:var(--black);color:var(--silver);padding:50px 0 24px;}
+  .footer-top{display:flex;justify-content:space-between;flex-wrap:wrap;gap:30px;margin-bottom:40px;}
+  .footer-social{display:flex;gap:12px;}
+  .footer-social a{
+    width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.08);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .footer-social svg{width:16px;height:16px;fill:#fff;}
+  .footer-bottom{
+    border-top:1px solid rgba(255,255,255,.1);padding-top:20px;
+    display:flex;justify-content:space-between;font-size:12px;color:#777;flex-wrap:wrap;gap:10px;
+  }
+
+  /* whatsapp float */
+  .wa-float{
+    position:fixed;bottom:24px;right:24px;z-index:99;
+    width:58px;height:58px;border-radius:50%;background:#25D366;
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 8px 20px rgba(0,0,0,.25);
+  }
+  .wa-float svg{width:28px;height:28px;fill:#fff;}
+
+  @media(max-width:900px){
+    .burger{display:flex;}
+    .nav-cta-btn{display:none;}
+    .nav-links{
+      display:flex;flex-direction:column;gap:0;list-style:none;
+      position:fixed;top:78px;left:0;right:0;
+      background:rgba(13,13,13,.98);backdrop-filter:blur(8px);
+      padding:4px 24px 12px;border-bottom:1px solid rgba(255,255,255,.08);
+      transform:translateY(-16px);opacity:0;pointer-events:none;
+      transition:transform .25s ease, opacity .25s ease;
+    }
+    .nav-links.open{transform:translateY(0);opacity:1;pointer-events:auto;}
+    .nav-links li{border-top:1px solid rgba(255,255,255,.06);}
+    .nav-links a{display:block;padding:16px 4px;}
+    .nav-cta-mobile{display:block;border-top:none;padding:14px 4px 4px;}
+    .nav-cta-mobile a{padding:14px;text-align:center;}
+    .hero-content h1{font-size:38px;}
+    .about-grid, .contact-wrap{grid-template-columns:1fr;}
+    .programs-grid{grid-template-columns:repeat(2,1fr);}
+    .achieve-grid{grid-template-columns:repeat(2,1fr);}
+    .testi-grid{grid-template-columns:1fr;}
+    .gallery-grid{grid-template-columns:repeat(2,1fr);}
+    .gallery-grid div:nth-child(3){grid-row:span 1;}
+    .gallery-grid div:nth-child(5){grid-column:span 1;}
+    section{padding:70px 0;}
+    .hero-grid{grid-template-columns:1fr;}
+    .hero-badge{order:-1;}
+    .hero-badge-inner{width:200px;height:200px;margin:0 auto 10px;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    .badge-wrap, .badge-shine, .mini-spark, [data-reveal]{animation:none !important;transition:none !important;}
+    [data-reveal]{opacity:1 !important;transform:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<a class="skip-link" href="#nosotros">Saltar al contenido principal</a>
+
+<!-- ================= NAV ================= -->
+<header>
+  <div class="container">
+    <nav>
+      <a href="#top" class="brand">
+        <div class="badge-wrap nav-badge">
+          <div class="badge-shine-mask">
+            <img src="/assets/img/magic-allstars-logo.svg" class="badge-svg" width="574" height="505" alt="Magic All Stars">
+            <div class="badge-shine"></div>
+          </div>
+        </div>
+        <span class="logo-word">Magic<span>AllStars</span><span class="logo-sub">ESCUELA DE PORRISMO</span></span>
+      </a>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="#nosotros">Nosotros</a></li>
+        <li><a href="#programas">Programas</a></li>
+        <li><a href="#logros">Logros</a></li>
+        <li><a href="#testimonios">Testimonios</a></li>
+        <li><a href="#contacto">Contacto</a></li>
+        <li class="nav-cta-mobile"><a href="#contacto" class="btn btn-primary">Clase de prueba gratis</a></li>
+      </ul>
+      <div class="nav-cta">
+        <a href="#contacto" class="btn btn-primary nav-cta-btn" style="padding:11px 24px;font-size:13px;">Clase de prueba gratis</a>
+        <button class="burger" id="burger" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Abrir menú">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- ================= HERO ================= -->
+<section class="hero" id="top">
+  <div class="hero-star star-1">
+    <svg viewBox="0 0 100 100" fill="#FF5FA8"><polygon points="50,3 61,38 98,38 68,59 79,95 50,73 21,95 32,59 2,38 39,38"/></svg>
+  </div>
+  <div class="hero-star star-2">
+    <svg viewBox="0 0 100 100" fill="#FF5FA8"><polygon points="50,3 61,38 98,38 68,59 79,95 50,73 21,95 32,59 2,38 39,38"/></svg>
+  </div>
+  <div class="container hero-grid">
+    <div class="hero-content">
+      <span class="eyebrow">✦ Inscripciones abiertas</span>
+      <h1>Formamos campeonas<br>dentro y fuera del tapete<em>Bienvenida a Magic All Stars</em></h1>
+      <p>Disciplina, acrobacia, baile y trabajo en equipo. Una escuela de porrismo pensada para que cada niña y joven descubra de qué está hecha.</p>
+      <div class="hero-btns">
+        <a href="#contacto" class="btn btn-primary">Agenda tu clase de prueba</a>
+        <a href="#programas" class="btn btn-outline">Ver programas</a>
+      </div>
+      <div class="hero-stats">
+        <div><strong>10+</strong><span>Años de trayectoria</span></div>
+        <div><strong>300+</strong><span>Atletas formadas</span></div>
+        <div><strong>25+</strong><span>Trofeos y títulos</span></div>
+      </div>
+    </div>
+    <div class="hero-badge">
+      <div class="badge-wrap hero-badge-inner">
+        <div class="badge-shine-mask">
+          <img src="/assets/img/magic-allstars-logo.svg" class="badge-svg" width="574" height="505" alt="Magic All Stars - Escuela de Porrismo">
+          <div class="badge-shine"></div>
+        </div>
+        <span class="mini-spark s1"></span>
+        <span class="mini-spark s2"></span>
+        <span class="mini-spark s3"></span>
+        <span class="mini-spark s4"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SOBRE NOSOTROS ================= -->
+<section id="nosotros">
+  <div class="container about-grid">
+    <div class="about-media" data-reveal>
+      <svg class="star-icon" viewBox="0 0 100 100" fill="#fff"><polygon points="50,3 61,38 98,38 68,59 79,95 50,73 21,95 32,59 2,38 39,38"/></svg>
+    </div>
+    <div class="about-text" data-reveal style="--i:1;">
+      <span class="eyebrow">Quiénes somos</span>
+      <h2>Más que porrismo, una comunidad que forma carácter</h2>
+      <p>En Magic All Stars entrenamos a niñas, niños y jóvenes en porrismo competitivo y recreativo, combinando técnica, acrobacia y coreografía con valores como la disciplina, el respeto y el trabajo en equipo.</p>
+      <p>Nuestro método está diseñado por etapas, respetando el desarrollo físico y emocional de cada atleta, desde sus primeros pasos hasta la alta competencia.</p>
+      <div class="value-row">
+        <div class="value-chip"><strong>Coaches certificados</strong><span>Formación técnica y en seguridad</span></div>
+        <div class="value-chip"><strong>Grupos por nivel</strong><span>Recreativo y competitivo</span></div>
+        <div class="value-chip"><strong>Ambiente seguro</strong><span>Protocolos y acompañamiento</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PROGRAMAS ================= -->
+<section class="bg-light" id="programas">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Programas</span>
+      <h2>Un camino para cada edad y nivel</h2>
+      <p>Desde el primer acercamiento al porrismo hasta la competencia de alto rendimiento.</p>
+    </div>
+    <div class="programs-grid">
+      <div class="program-card" data-reveal style="--i:0;">
+        <div class="program-icon"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.3L21 9l-5 4.6L17.5 21 12 17.3 6.5 21 8 13.6 3 9l6.1-.7z"/></svg></div>
+        <span class="age">4 – 6 años</span>
+        <h3>Mini Stars</h3>
+        <p>Primer contacto con el movimiento, ritmo y trabajo en equipo, en formato de juego.</p>
+      </div>
+      <div class="program-card" data-reveal style="--i:1;">
+        <div class="program-icon"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.3L21 9l-5 4.6L17.5 21 12 17.3 6.5 21 8 13.6 3 9l6.1-.7z"/></svg></div>
+        <span class="age">7 – 10 años</span>
+        <h3>Junior Stars</h3>
+        <p>Fundamentos técnicos de porrismo: bases, saltos, stunts básicos y coreografía.</p>
+      </div>
+      <div class="program-card" data-reveal style="--i:2;">
+        <div class="program-icon"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.3L21 9l-5 4.6L17.5 21 12 17.3 6.5 21 8 13.6 3 9l6.1-.7z"/></svg></div>
+        <span class="age">11 – 15 años</span>
+        <h3>Youth Stars</h3>
+        <p>Perfeccionamiento técnico y preparación para primeras competencias oficiales.</p>
+      </div>
+      <div class="program-card" data-reveal style="--i:3;">
+        <div class="program-icon"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.3L21 9l-5 4.6L17.5 21 12 17.3 6.5 21 8 13.6 3 9l6.1-.7z"/></svg></div>
+        <span class="age">16+ años</span>
+        <h3>Elite / Competitivo</h3>
+        <p>Alto rendimiento: rutinas de nivel avanzado y participación en torneos regionales y nacionales.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= LOGROS ================= -->
+<section class="bg-dark" id="logros">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow" style="color:var(--pink-light);">Trayectoria</span>
+      <h2>Resultados que hablan por sí solos</h2>
+      <p>Una década construyendo campeonas, un entrenamiento a la vez.</p>
+    </div>
+    <div class="achieve-grid" data-reveal>
+      <div><strong>10+</strong><span>Años de experiencia</span></div>
+      <div><strong>25+</strong><span>Trofeos y títulos</span></div>
+      <div><strong>300+</strong><span>Atletas formadas</span></div>
+      <div><strong>15+</strong><span>Coaches certificados</span></div>
+    </div>
+    <div class="trophy-row">
+      <div class="badge">🏆 Campeonato Regional</div>
+      <div class="badge">🏆 Copa Nacional All Star</div>
+      <div class="badge">🏆 Mejor Escuela Formativa</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TESTIMONIOS ================= -->
+<section id="testimonios">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Testimonios</span>
+      <h2>Lo que dicen las familias Magic</h2>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card" data-reveal style="--i:0;">
+        <p>Mi hija llegó tímida y hoy es una niña segura de sí misma. El acompañamiento de los coaches ha sido clave.</p>
+        <div class="testi-person">
+          <div class="testi-avatar"></div>
+          <div><strong>Nombre del padre/madre</strong><span>Mamá de atleta Junior Stars</span></div>
+        </div>
+      </div>
+      <div class="testi-card" data-reveal style="--i:1;">
+        <p>El nivel competitivo y la disciplina que enseñan en Magic All Stars se nota en cada presentación.</p>
+        <div class="testi-person">
+          <div class="testi-avatar"></div>
+          <div><strong>Nombre del padre/madre</strong><span>Papá de atleta Elite</span></div>
+        </div>
+      </div>
+      <div class="testi-card" data-reveal style="--i:2;">
+        <p>Un ambiente familiar, seguro y muy profesional. Totalmente recomendados.</p>
+        <div class="testi-person">
+          <div class="testi-avatar"></div>
+          <div><strong>Nombre del padre/madre</strong><span>Mamá de atleta Mini Stars</span></div>
+        </div>
+      </div>
+    </div>
+    <p class="placeholder-note" style="text-align:center;">* Reemplazar con testimonios reales de familias de la escuela.</p>
+  </div>
+</section>
+
+<!-- ================= GALERIA ================= -->
+<section class="bg-light">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Galería</span>
+      <h2>Momentos que definen a un equipo</h2>
+    </div>
+    <div class="gallery-grid" data-reveal>
+      <div></div><div></div><div></div><div></div><div></div><div></div>
+    </div>
+    <p class="gallery-note">Espacio reservado para fotos y videos reales de entrenamientos, rutinas y competencias.</p>
+  </div>
+</section>
+
+<!-- ================= CTA FINAL ================= -->
+<section>
+  <div class="container">
+    <div class="cta-final" data-reveal>
+      <div>
+        <h2>¿Lista para brillar con nosotros?</h2>
+        <p>Agenda una clase de prueba sin costo y conoce por qué las familias eligen Magic All Stars.</p>
+      </div>
+      <a href="#contacto" class="btn btn-outline">Quiero mi clase de prueba</a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CONTACTO ================= -->
+<section class="bg-light" id="contacto">
+  <div class="container contact-wrap">
+    <div class="contact-info" data-reveal>
+      <span class="eyebrow">Contacto</span>
+      <h2>Hablemos y arma tu horario ideal</h2>
+      <p>Escríbenos o completa el formulario y te contactamos para agendar tu clase de prueba.</p>
+      <div class="info-item">
+        <div class="info-icon"><svg viewBox="0 0 24 24"><path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg></div>
+        <div><strong>Ubicación</strong><span>Cra. 9 #6 no 5, Villamaría, Caldas, Colombia</span></div>
+      </div>
+      <div class="info-item">
+        <div class="info-icon"><svg viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.8 3.7 5 6.5 6.5l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.4.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .8-.2 1z"/></svg></div>
+        <div><strong>WhatsApp / Celular</strong><span><a href="https://wa.me/573228575070" target="_blank" rel="noopener" style="color:inherit;">+57 322 857 5070</a></span></div>
+      </div>
+      <div class="info-item">
+        <div class="info-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4V4zm2 4l6 4 6-4" fill="none" stroke="#E6127D" stroke-width="1.6"/></svg></div>
+        <div><strong>Correo</strong><span><a href="mailto:magiccheersallstars@gmail.com" style="color:inherit;">magiccheersallstars@gmail.com</a></span></div>
+      </div>
+      <div class="info-item">
+        <div class="info-icon"><svg viewBox="0 0 24 24"><path d="M12 8v4l3 3M12 22c5.5 0 10-4.5 10-10S17.5 2 12 2 2 6.5 2 12s4.5 10 10 10z"/></svg></div>
+        <div><strong>Horarios de entrenamiento</strong><span>Lunes a viernes, tardes — Sábados, mañana</span></div>
+      </div>
+    </div>
+    <form id="contact-form" data-reveal style="--i:1;" novalidate>
+      <div class="form-row">
+        <label for="f-acudiente">Nombre del acudiente</label>
+        <input type="text" id="f-acudiente" name="acudiente" placeholder="Nombre completo" autocomplete="name" required>
+      </div>
+      <div class="form-row">
+        <label for="f-atleta">Nombre de la futura atleta / atleta</label>
+        <input type="text" id="f-atleta" name="atleta" placeholder="Nombre" required>
+      </div>
+      <div class="form-row">
+        <label for="f-edad">Edad</label>
+        <select id="f-edad" name="edad" required>
+          <option value="4 - 6 años">4 - 6 años</option>
+          <option value="7 - 10 años">7 - 10 años</option>
+          <option value="11 - 15 años">11 - 15 años</option>
+          <option value="16+ años">16+ años</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label for="f-whatsapp">WhatsApp</label>
+        <input type="tel" id="f-whatsapp" name="whatsapp" placeholder="+00 000 0000000" autocomplete="tel" required>
+      </div>
+      <div class="form-row">
+        <label for="f-mensaje">Mensaje (opcional)</label>
+        <textarea id="f-mensaje" name="mensaje" rows="3" placeholder="Cuéntanos qué te gustaría saber"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Enviar y agendar clase de prueba</button>
+      <p id="form-note" role="status" aria-live="polite"></p>
+    </form>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="container">
+    <div class="footer-top">
+      <div>
+        <a href="#top" class="brand">
+          <div class="badge-wrap nav-badge" style="width:38px;height:38px;">
+            <div class="badge-shine-mask">
+              <img src="/assets/img/magic-allstars-logo.svg" class="badge-svg" width="574" height="505" alt="Magic All Stars">
+              <div class="badge-shine"></div>
+            </div>
+          </div>
+          <span class="logo-word">Magic<span>AllStars</span></span>
+        </a>
+        <p style="font-size:13px;color:#999;max-width:280px;margin-top:10px;">Escuela de porrismo formativo y competitivo.</p>
+      </div>
+      <div class="footer-social">
+        <a href="https://www.instagram.com/magic_all_stars" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24"><path d="M12 2c2.7 0 3 0 4.1.1 1.1 0 1.8.2 2.5.5.7.3 1.2.6 1.8 1.2.6.6.9 1.1 1.2 1.8.3.7.5 1.4.5 2.5.1 1.1.1 1.4.1 4.1s0 3-.1 4.1c0 1.1-.2 1.8-.5 2.5-.3.7-.6 1.2-1.2 1.8-.6.6-1.1.9-1.8 1.2-.7.3-1.4.5-2.5.5-1.1.1-1.4.1-4.1.1s-3 0-4.1-.1c-1.1 0-1.8-.2-2.5-.5-.7-.3-1.2-.6-1.8-1.2-.6-.6-.9-1.1-1.2-1.8-.3-.7-.5-1.4-.5-2.5C2 15 2 14.7 2 12s0-3 .1-4.1c0-1.1.2-1.8.5-2.5.3-.7.6-1.2 1.2-1.8.6-.6 1.1-.9 1.8-1.2.7-.3 1.4-.5 2.5-.5C9 2 9.3 2 12 2zm0 5a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 8.2a3.2 3.2 0 1 1 0-6.4 3.2 3.2 0 0 1 0 6.4zm5.2-8.4a1.2 1.2 0 1 1-2.4 0 1.2 1.2 0 0 1 2.4 0z"/></svg></a>
+        <a href="https://www.tiktok.com/@magiccheersallsta" target="_blank" rel="noopener" aria-label="TikTok"><svg viewBox="0 0 24 24"><path d="M14 2h3.2c.2 1.6 1.1 3 2.5 3.8.9.5 1.9.8 3 .9v3.3c-1.7 0-3.3-.5-4.7-1.4v6.7c0 3.4-2.7 6.1-6.1 6.1S5.8 18.7 5.8 15.3s2.7-6.1 6.1-6.1c.3 0 .6 0 .9.1v3.4c-.3-.1-.6-.2-.9-.2-1.5 0-2.7 1.2-2.7 2.7s1.2 2.7 2.7 2.7 2.7-1.2 2.7-2.7V2z"/></svg></a>
+        <a href="mailto:magiccheersallstars@gmail.com" aria-label="Correo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><path d="M4 4h16v16H4V4zm2 4l6 4 6-4"/></svg></a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span data-year>2026</span> Magic All Stars. Todos los derechos reservados.</span>
+      <span>Landing page creada por Alma Agencia Creativa 💗 en su primer aniversario juntos.</span>
+    </div>
+  </div>
+</footer>
+
+<a class="wa-float" href="https://wa.me/573228575070" target="_blank" rel="noopener" aria-label="WhatsApp">
+  <svg viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.8 3.7 5 6.5 6.5l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.4.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .8-.2 1z"/></svg>
+</a>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---- Mobile menu ----
+  var burger = document.getElementById('burger');
+  var navLinks = document.getElementById('nav-links');
+
+  function setMenu(open){
+    navLinks.classList.toggle('open', open);
+    burger.setAttribute('aria-expanded', String(open));
+    document.body.style.overflow = open ? 'hidden' : '';
+  }
+
+  burger.addEventListener('click', function(){
+    setMenu(!navLinks.classList.contains('open'));
+  });
+
+  navLinks.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', function(){ setMenu(false); });
+  });
+
+  document.addEventListener('click', function(e){
+    if(navLinks.classList.contains('open') && !navLinks.contains(e.target) && !burger.contains(e.target)){
+      setMenu(false);
+    }
+  });
+
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && navLinks.classList.contains('open')) setMenu(false);
+  });
+
+  // ---- Scroll reveal ----
+  var revealEls = document.querySelectorAll('[data-reveal]');
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('is-visible');
+          io.unobserve(entry.target);
+        }
+      });
+    }, {threshold:0.15, rootMargin:'0px 0px -40px 0px'});
+    revealEls.forEach(function(el){ io.observe(el); });
+  } else {
+    revealEls.forEach(function(el){ el.classList.add('is-visible'); });
+  }
+
+  // ---- Contact form -> WhatsApp redirect ----
+  var form = document.getElementById('contact-form');
+  var note = document.getElementById('form-note');
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    if(!form.checkValidity()){
+      form.reportValidity();
+      return;
+    }
+    var data = new FormData(form);
+    var acudiente = String(data.get('acudiente') || '').trim();
+    var atleta = String(data.get('atleta') || '').trim();
+    var edad = String(data.get('edad') || '').trim();
+    var whatsapp = String(data.get('whatsapp') || '').trim();
+    var mensaje = String(data.get('mensaje') || '').trim();
+
+    var lines = [
+      '¡Hola Magic All Stars! Quiero agendar una clase de prueba.',
+      'Acudiente: ' + acudiente,
+      'Atleta: ' + atleta,
+      'Edad: ' + edad,
+      'WhatsApp de contacto: ' + whatsapp
+    ];
+    if(mensaje) lines.push('Mensaje: ' + mensaje);
+
+    var text = encodeURIComponent(lines.join('\n'));
+    note.textContent = 'Te estamos redirigiendo a WhatsApp...';
+    note.style.display = 'block';
+    window.open('https://wa.me/573228575070?text=' + text, '_blank', 'noopener');
+    form.reset();
+  });
+
+  // ---- Footer year ----
+  document.querySelectorAll('[data-year]').forEach(function(el){
+    el.textContent = new Date().getFullYear();
+  });
+})();
+</script>
+
+</body>
+</html>
