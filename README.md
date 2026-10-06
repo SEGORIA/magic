@@ -1,32 +1,34 @@
-# Magic All Stars — Landing Page
+# Magic All Stars + My Magic
 
-Landing page para Magic All Stars, escuela de porrismo en Villamaría, Caldas, Colombia.
+Plataforma web de Magic All Stars: sitio público, portal privado por roles, seguimiento deportivo, galería moderada y Magic TV.
 
-Sitio estático (HTML/CSS/JS, sin build step) listo para desplegar en Vercel.
+## Funciones incluidas
 
-## Estructura
-
-```
-index.html          Página principal
-site.webmanifest     Manifest PWA (favicons, tema)
-robots.txt / sitemap.xml   SEO
-vercel.json          Headers de seguridad y cache
-assets/img/          Logo, favicons e imagen para redes (og-image.png)
-```
+- Acceso separado para familias/deportistas, entrenadores y administración.
+- Siete equipos y asignación flexible de entrenadores.
+- Ficha por deportista con foto, habilidades, evaluaciones, progreso e historial.
+- Borradores de evaluación y protección contra ediciones simultáneas.
+- Fotos familiares sujetas a revisión individual y fotos oficiales administrativas.
+- Consentimiento verificable por deportista y retiro inmediato de Magic TV.
+- Dispositivos Magic TV activados por enlace, con rotación automática por equipo.
+- RLS, MFA obligatorio para administración, auditoría, límites de carga y archivos privados.
 
 ## Desarrollo local
 
-Abre `index.html` directamente en el navegador, o sirve la carpeta con cualquier servidor estático:
-
 ```bash
-npx serve .
+npm install
+copy .env.example .env.local
+npm run dev
 ```
 
-## Despliegue
+Sin credenciales de Supabase, la interfaz completa puede revisarse en `http://127.0.0.1:3000/demo`.
 
-Conectado a Vercel — cada push a `main` despliega automáticamente a producción.
+## Verificación
 
-## Pendientes de contenido
+```bash
+npm run typecheck
+npm test
+npm run build
+```
 
-- Reemplazar testimonios de ejemplo en la sección "Testimonios" por citas reales de familias.
-- Agregar fotos/videos reales en "Sobre nosotros" y en la Galería (actualmente son bloques de color de marcador de posición).
+La arquitectura y decisiones de seguridad están en [docs/ARQUITECTURA-MAGIC.md](docs/ARQUITECTURA-MAGIC.md). El procedimiento de publicación está en [docs/PUESTA-EN-PRODUCCION.md](docs/PUESTA-EN-PRODUCCION.md).
