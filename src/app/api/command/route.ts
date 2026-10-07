@@ -14,10 +14,19 @@ export async function POST(request: Request) {
     const d = await body(request);
     if (typeof d.action !== "string" || !d.data || typeof d.data !== "object")
       throw new HttpError(400, "Solicitud inválida");
-    const { data, error } = await db.rpc("magic_command", {
-      action: d.action,
-      d: d.data,
-    });
+    const taskActions = new Set([
+      "task_create",
+      "task_close",
+      "monthly_goal_save",
+      "task_review",
+    ]);
+    const { data, error } = await db.rpc(
+      taskActions.has(d.action) ? "magic_task_command" : "magic_command",
+      {
+        action: d.action,
+        d: d.data,
+      },
+    );
     if (error) {
       if (error.code === "23505")
         throw new HttpError(

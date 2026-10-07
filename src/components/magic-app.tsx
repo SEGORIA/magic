@@ -32,6 +32,7 @@ import {
   CheckCircle2,
   AlertCircle,
   Copy,
+  ListTodo,
 } from "lucide-react";
 import { demoSnapshot } from "@/lib/demo";
 import {
@@ -52,6 +53,7 @@ const sectionNames: Record<string, string> = {
   entrenadores: "Personas y accesos",
   metodologia: "Mapa de habilidades",
   momentos: "Momentos Magic",
+  tareas: "Tareas y metas",
   pantallas: "Magic TV",
   perfil: "Mi perfil",
 };
@@ -327,6 +329,52 @@ export default function MagicApp({
                 }
               : prev,
           );
+        else if (action === "task_create")
+          setData((prev) =>
+            prev
+              ? {
+                  ...prev,
+                  tasks: [
+                    ...prev.tasks,
+                    {
+                      id: crypto.randomUUID(),
+                      team_id: String(d.team_id),
+                      title: String(d.title),
+                      instructions: String(d.instructions ?? ""),
+                      due_at: d.due_at ? String(d.due_at) : null,
+                      active: true,
+                      created_by: me!,
+                      created_at: new Date().toISOString(),
+                    },
+                  ],
+                }
+              : prev,
+          );
+        else if (action === "monthly_goal_save")
+          setData((prev) =>
+            prev
+              ? {
+                  ...prev,
+                  monthlyGoals: [
+                    ...prev.monthlyGoals.filter(
+                      (g) =>
+                        !(
+                          g.team_id === d.team_id &&
+                          g.skill_id === d.skill_id &&
+                          g.month === d.month
+                        ),
+                    ),
+                    {
+                      id: crypto.randomUUID(),
+                      team_id: String(d.team_id),
+                      skill_id: String(d.skill_id),
+                      month: String(d.month),
+                      note: String(d.note ?? ""),
+                    },
+                  ],
+                }
+              : prev,
+          );
         else if (action === "membership")
           setData((prev) =>
             prev
@@ -411,6 +459,7 @@ export default function MagicApp({
           { key: "metodologia", icon: BookOpen, label: "Habilidades" },
         ]
       : []),
+    { key: "tareas", icon: ListTodo, label: "Tareas y metas" },
     { key: "momentos", icon: ImagePlus, label: "Momentos Magic" },
     ...(isAdmin
       ? [{ key: "pantallas", icon: MonitorPlay, label: "Magic TV" }]
@@ -818,13 +867,15 @@ export default function MagicApp({
                       ? "Un nuevo día para acompañar grandes avances."
                       : section === "momentos"
                         ? "Los pequeños momentos también cuentan nuestra historia."
-                        : section === "pantallas"
-                          ? "Toda la magia del equipo, en una sola pantalla."
-                          : section === "deportistas"
-                            ? "Cada deportista tiene un camino único. Acompáñalo."
-                            : section === "metodologia"
-                              ? "Define criterios claros antes de empezar a evaluar."
-                              : "Todo en su lugar, para concentrarnos en crecer."}
+                        : section === "tareas"
+                          ? "Un reto claro, una meta compartida y cada avance con propósito."
+                          : section === "pantallas"
+                            ? "Toda la magia del equipo, en una sola pantalla."
+                            : section === "deportistas"
+                              ? "Cada deportista tiene un camino único. Acompáñalo."
+                              : section === "metodologia"
+                                ? "Define criterios claros antes de empezar a evaluar."
+                                : "Todo en su lugar, para concentrarnos en crecer."}
                   </p>
                 </div>
                 {section === "deportistas" && isAdmin && (
@@ -843,6 +894,17 @@ export default function MagicApp({
                   >
                     <Upload size={18} />
                     {isAdmin ? "Subir fotos oficiales" : "Subir fotos"}
+                  </button>
+                )}
+                {section === "tareas" && (
+                  <button
+                    className="btn primary"
+                    onClick={() =>
+                      setDialog({ type: staff ? "task" : "task-submit" })
+                    }
+                  >
+                    {staff ? <Plus size={18} /> : <Upload size={18} />}
+                    {staff ? "Nueva tarea" : "Entregar tarea"}
                   </button>
                 )}
                 {section === "entrenadores" && isAdmin && (
@@ -1351,6 +1413,205 @@ export default function MagicApp({
                   )}
                 </>
               )}
+              {section === "tareas" && (
+                <>
+                  <div className="notice">
+                    <ListTodo size={20} />
+                    <p>
+                      <strong>
+                        Metas que se entienden y se pueden celebrar.
+                      </strong>{" "}
+                      Las entregas en imagen quedan privadas para la familia y
+                      el equipo docente.
+                    </p>
+                  </div>
+                  {staff && (
+                    <div className="form-actions space-bottom">
+                      <button
+                        className="btn secondary"
+                        onClick={() => setDialog({ type: "monthly-goal" })}
+                      >
+                        <Sparkles size={17} /> Definir habilidad del mes
+                      </button>
+                      <button
+                        className="btn secondary"
+                        onClick={() => setDialog({ type: "task-submit" })}
+                      >
+                        <Upload size={17} /> Subir evidencia
+                      </button>
+                    </div>
+                  )}
+                  <div className="split-grid">
+                    <section className="panel">
+                      <PanelTitle
+                        title="Tareas activas"
+                        subtitle="El equipo acompaña cada entrega"
+                      />
+                      {data.tasks
+                        .filter(
+                          (t) =>
+                            t.active &&
+                            visibleTeams.some((team) => team.id === t.team_id),
+                        )
+                        .map((t) => {
+                          const deliveries = data.media.filter(
+                            (m) => m.kind === "task" && m.task_id === t.id,
+                          );
+                          return (
+                            <article className="timeline-item" key={t.id}>
+                              <span className="timeline-dot" />
+                              <small>
+                                {teamName(t.team_id)}
+                                {t.due_at
+                                  ? ` · Entrega: ${new Date(t.due_at).toLocaleDateString("es-CO")}`
+                                  : " · Sin fecha límite"}
+                              </small>
+                              <h3>{t.title}</h3>
+                              <p>
+                                {t.instructions ||
+                                  "Consulta con tu profe los detalles de esta actividad."}
+                              </p>
+                              {staff ? (
+                                <small>
+                                  {deliveries.length} evidencia(s) recibida(s)
+                                </small>
+                              ) : (
+                                <span className="tag green">
+                                  {deliveries.some(
+                                    (m) =>
+                                      m.athlete_id &&
+                                      data.guardians.some(
+                                        (g) =>
+                                          g.user_id === me &&
+                                          g.athlete_id === m.athlete_id,
+                                      ),
+                                  )
+                                    ? "Evidencia enviada"
+                                    : "Pendiente por enviar"}
+                                </span>
+                              )}
+                            </article>
+                          );
+                        })}
+                      {!data.tasks.some(
+                        (t) =>
+                          t.active &&
+                          visibleTeams.some((team) => team.id === t.team_id),
+                      ) && (
+                        <Empty title="El próximo reto está por llegar">
+                          Las profes publicarán aquí tareas claras para cada
+                          equipo.
+                        </Empty>
+                      )}
+                    </section>
+                    <section className="panel">
+                      <PanelTitle
+                        title="Habilidades para este mes"
+                        subtitle="Un foco común para avanzar en equipo"
+                      />
+                      {data.monthlyGoals
+                        .filter((g) =>
+                          visibleTeams.some((t) => t.id === g.team_id),
+                        )
+                        .sort((a, b) => b.month.localeCompare(a.month))
+                        .map((g) => (
+                          <div className="skill-row" key={g.id}>
+                            <span className="skill-symbol">
+                              <Star size={18} />
+                            </span>
+                            <div>
+                              <strong>
+                                {data.skills.find((s) => s.id === g.skill_id)
+                                  ?.name ?? "Habilidad"}
+                              </strong>
+                              <small>
+                                {teamName(g.team_id)} ·{" "}
+                                {new Date(
+                                  `${g.month}T12:00:00`,
+                                ).toLocaleDateString("es-CO", {
+                                  month: "long",
+                                  year: "numeric",
+                                })}
+                              </small>
+                              {g.note && <small>{g.note}</small>}
+                            </div>
+                          </div>
+                        ))}
+                      {!data.monthlyGoals.some((g) =>
+                        visibleTeams.some((t) => t.id === g.team_id),
+                      ) && (
+                        <Empty title="Meta mensual por definir">
+                          El equipo verá aquí la habilidad que guiará su
+                          práctica del mes.
+                        </Empty>
+                      )}
+                    </section>
+                  </div>
+                  {staff && data.media.some((m) => m.kind === "task") && (
+                    <section className="panel space-top">
+                      <PanelTitle
+                        title="Evidencias recibidas"
+                        subtitle="Revisa y acompaña cada avance"
+                      />
+                      <div className="media-grid">
+                        {data.media
+                          .filter(
+                            (m) =>
+                              m.kind === "task" &&
+                              m.team_ids.some((id) =>
+                                visibleTeams.some((t) => t.id === id),
+                              ),
+                          )
+                          .map((m) => (
+                            <article className="media-card" key={m.id}>
+                              <div className="media-image">
+                                {demo ? (
+                                  <div className="demo-image">
+                                    <Upload size={42} />
+                                    <span>Evidencia de tarea</span>
+                                  </div>
+                                ) : (
+                                  <img
+                                    src={`/api/media/${m.id}`}
+                                    alt={m.title}
+                                  />
+                                )}
+                              </div>
+                              <div className="media-body">
+                                <h3>{m.title}</h3>
+                                <p>
+                                  {
+                                    data.athletes.find(
+                                      (a) => a.id === m.athlete_id,
+                                    )?.name
+                                  }
+                                </p>
+                                <span
+                                  className={`tag ${m.status === "approved" ? "green" : "pink"}`}
+                                >
+                                  {statusName(m.status)}
+                                </span>
+                                <div className="media-actions">
+                                  <button
+                                    className="btn secondary"
+                                    onClick={() =>
+                                      setDialog({
+                                        type: "task-review",
+                                        id: m.id,
+                                      })
+                                    }
+                                  >
+                                    Revisar entrega
+                                  </button>
+                                </div>
+                              </div>
+                            </article>
+                          ))}
+                      </div>
+                    </section>
+                  )}
+                </>
+              )}
               {section === "momentos" && (
                 <>
                   <div className="notice">
@@ -1731,6 +1992,10 @@ function dialogTitle(type: string) {
         invite: "Invitar a Magic",
         assign: "Asignar coaches",
         skill: "Nueva habilidad",
+        task: "Nueva tarea",
+        "task-submit": "Entregar tarea en imagen",
+        "task-review": "Revisar evidencia",
+        "monthly-goal": "Habilidad a lograr este mes",
         tv: "Conectar Magic TV",
         team: "Nuevo equipo",
         "athlete-settings": "Gestionar ficha",
@@ -1806,6 +2071,20 @@ function DialogContent(p: DialogProps) {
           .split("\n")
           .map((s) => s.trim())
           .filter(Boolean),
+      });
+    if (dialog.type === "task")
+      return command("task_create", {
+        ...d,
+        due_at: d.due_at
+          ? new Date(`${d.due_at}T23:59:59-05:00`).toISOString()
+          : null,
+      });
+    if (dialog.type === "monthly-goal") return command("monthly_goal_save", d);
+    if (dialog.type === "task-review")
+      return command("task_review", {
+        id: dialog.id,
+        approve: d.decision === "approve",
+        reason: d.reason,
       });
     if (dialog.type === "athlete-settings") {
       if (subform === "membership")
@@ -1896,20 +2175,22 @@ function DialogContent(p: DialogProps) {
       }
       return;
     }
-    if (["upload", "photo"].includes(dialog.type)) {
+    if (["upload", "photo", "task-submit"].includes(dialog.type)) {
       if (!files.length) {
         p.setError("Selecciona al menos una foto");
         return;
       }
       p.setBusy(true);
       const kind =
-        dialog.type === "photo"
-          ? dialog.id
-            ? "athlete"
-            : "avatar"
-          : p.isAdmin
-            ? "official"
-            : "family";
+        dialog.type === "task-submit"
+          ? "task"
+          : dialog.type === "photo"
+            ? dialog.id
+              ? "athlete"
+              : "avatar"
+            : p.isAdmin
+              ? "official"
+              : "family";
       try {
         for (let i = 0; i < files.length; i++) {
           const file = files[i];
@@ -1930,7 +2211,11 @@ function DialogContent(p: DialogProps) {
                   ? [d.team_id]
                   : [],
             kind,
-            athlete_id: dialog.id ?? null,
+            athlete_id:
+              dialog.type === "task-submit"
+                ? String(d.athlete_id)
+                : (dialog.id ?? null),
+            task_id: dialog.type === "task-submit" ? d.task_id : null,
           };
           if (p.demo) {
             p.setData((prev) =>
@@ -1945,6 +2230,7 @@ function DialogContent(p: DialogProps) {
                         owner_id: p.me,
                         team_ids: info.team_ids as string[],
                         kind: kind as Media["kind"],
+                        task_id: info.task_id ? String(info.task_id) : null,
                         status: "pending",
                         portal: false,
                         tv: false,
@@ -2270,6 +2556,78 @@ function DialogContent(p: DialogProps) {
           </p>
         </>
       )}
+      {dialog.type === "task" && (
+        <>
+          <Field label="Equipo">
+            <select name="team_id" required>
+              {options}
+            </select>
+          </Field>
+          <Field label="Título de la tarea">
+            <input
+              name="title"
+              required
+              minLength={2}
+              maxLength={140}
+              placeholder="Ej. Practicar High V frente al espejo"
+            />
+          </Field>
+          <Field label="Instrucciones">
+            <textarea
+              name="instructions"
+              rows={4}
+              maxLength={2000}
+              placeholder="Explica qué practicar y qué debe verse en la imagen de evidencia…"
+            />
+          </Field>
+          <Field label="Fecha límite (opcional)">
+            <input name="due_at" type="date" />
+          </Field>
+          <p className="form-note">
+            Las familias verán únicamente las tareas de sus equipos. Las
+            evidencias no se publican en Magic TV.
+          </p>
+        </>
+      )}
+      {dialog.type === "monthly-goal" && (
+        <>
+          <Field label="Equipo">
+            <select name="team_id" required>
+              {options}
+            </select>
+          </Field>
+          <Field label="Habilidad a lograr">
+            <select name="skill_id" required>
+              {data.skills
+                .filter(
+                  (s) => s.active && teamList.some((t) => t.id === s.team_id),
+                )
+                .map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.name} ·{" "}
+                    {data.teams.find((t) => t.id === s.team_id)?.name}
+                  </option>
+                ))}
+            </select>
+          </Field>
+          <Field label="Mes">
+            <input
+              name="month"
+              type="month"
+              required
+              defaultValue={new Date().toISOString().slice(0, 7)}
+            />
+          </Field>
+          <Field label="Enfoque o mensaje para el equipo">
+            <textarea
+              name="note"
+              rows={3}
+              maxLength={500}
+              placeholder="Qué queremos conseguir juntas este mes…"
+            />
+          </Field>
+        </>
+      )}
       {dialog.type === "evaluate" && (
         <>
           <p className="form-note">
@@ -2366,7 +2724,96 @@ function DialogContent(p: DialogProps) {
           </Field>
         </>
       )}
-      {["photo", "upload"].includes(dialog.type) && (
+      {dialog.type === "task-submit" && (
+        <>
+          <Field label="Tarea">
+            <select name="task_id" required>
+              <option value="">Selecciona una tarea</option>
+              {data.tasks
+                .filter(
+                  (t) =>
+                    t.active && teamList.some((team) => team.id === t.team_id),
+                )
+                .map((t) => (
+                  <option key={t.id} value={t.id}>
+                    {t.title} ·{" "}
+                    {data.teams.find((team) => team.id === t.team_id)?.name}
+                  </option>
+                ))}
+            </select>
+          </Field>
+          <Field label="Deportista">
+            <select name="athlete_id" required>
+              {data.athletes
+                .filter((athlete) => {
+                  const familyAthlete = data.guardians.some(
+                    (g) => g.user_id === p.me,
+                  );
+                  return (
+                    p.isAdmin ||
+                    (familyAthlete
+                      ? data.guardians.some(
+                          (g) =>
+                            g.user_id === p.me && g.athlete_id === athlete.id,
+                        )
+                      : teamList.some((team) =>
+                          data.memberships.some(
+                            (m) =>
+                              m.athlete_id === athlete.id &&
+                              m.team_id === team.id,
+                          ),
+                        ))
+                  );
+                })
+                .map((athlete) => (
+                  <option key={athlete.id} value={athlete.id}>
+                    {athlete.name}
+                  </option>
+                ))}
+            </select>
+          </Field>
+          <Field label="Título de la evidencia">
+            <input
+              name="title"
+              required
+              maxLength={160}
+              defaultValue="Evidencia de práctica"
+            />
+          </Field>
+        </>
+      )}
+      {dialog.type === "task-review" && m && (
+        <>
+          {!p.demo && (
+            <img
+              className="review-image"
+              src={`/api/media/${m.id}`}
+              alt={m.title}
+            />
+          )}
+          <h3>{m.title}</h3>
+          <p className="form-note">
+            Evidencia enviada por o para{" "}
+            {data.athletes.find((athlete) => athlete.id === m.athlete_id)?.name}
+            . Esta imagen permanece privada.
+          </p>
+          <Field label="Decisión">
+            <select name="decision">
+              <option value="approve">Validar entrega</option>
+              <option value="reject">Solicitar un nuevo intento</option>
+            </select>
+          </Field>
+          <Field label="Mensaje para la familia">
+            <textarea
+              name="reason"
+              maxLength={300}
+              rows={3}
+              placeholder="Reconoce el esfuerzo y orienta el siguiente paso…"
+            />
+          </Field>
+        </>
+      )}
+      {["photo", "upload", "task-submit"].includes(dialog.type) && (
         <>
           {dialog.type === "upload" && (
             <>
@@ -2421,9 +2868,11 @@ function DialogContent(p: DialogProps) {
             />
           </label>
           <p className="form-note">
-            {p.isAdmin && dialog.type === "upload"
-              ? "Se cargarán como fotos oficiales. Después elige dónde publicarlas desde la revisión."
-              : "Solo comparte imágenes que tengas permiso de usar. Las fotos para TV requieren revisión."}
+            {dialog.type === "task-submit"
+              ? "Esta imagen se envía solo a las profes del equipo para acompañar el proceso. No se publica en la galería ni en Magic TV."
+              : p.isAdmin && dialog.type === "upload"
+                ? "Se cargarán como fotos oficiales. Después elige dónde publicarlas desde la revisión."
+                : "Solo comparte imágenes que tengas permiso de usar. Las fotos para TV requieren revisión."}
           </p>
           {uploadProgress && <p role="status">{uploadProgress}</p>}
         </>
@@ -2622,15 +3071,17 @@ function DialogContent(p: DialogProps) {
           <Submit busy={busy}>
             {dialog.type === "evaluate"
               ? "Publicar avance"
-              : dialog.type === "review"
+              : dialog.type === "review" || dialog.type === "task-review"
                 ? "Guardar revisión"
                 : dialog.type === "tv"
                   ? "Generar enlace"
                   : dialog.type === "invite"
                     ? "Enviar invitación"
-                    : dialog.type === "upload"
-                      ? "Subir fotos"
-                      : "Guardar"}
+                    : dialog.type === "task-submit"
+                      ? "Enviar evidencia"
+                      : dialog.type === "upload"
+                        ? "Subir fotos"
+                        : "Guardar"}
           </Submit>
         </div>
       )}

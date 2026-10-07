@@ -128,6 +128,28 @@ export function demoSnapshot(): Snapshot {
     skills,
     evaluations,
     media: [],
+    tasks: [
+      {
+        id: "task-demo-1",
+        team_id: ids[4],
+        title: "Práctica de High V en casa",
+        instructions:
+          "Envía una foto mostrando la posición de brazos y una postura firme.",
+        due_at: "2026-10-15T23:59:59-05:00",
+        active: true,
+        created_by: "coach-5",
+        created_at: "2026-10-07T12:00:00Z",
+      },
+    ],
+    monthlyGoals: [
+      {
+        id: "goal-demo-1",
+        team_id: ids[4],
+        skill_id: `${ids[4]}-2`,
+        month: "2026-10-01",
+        note: "Postura, tensión y precisión en cada repetición.",
+      },
+    ],
     devices: [],
     invitations: [],
   };

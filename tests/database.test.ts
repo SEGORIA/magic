@@ -31,6 +31,12 @@ before(async () => {
  create function auth.jwt() returns jsonb language sql stable as $$ select jsonb_build_object('aal',current_setting('request.jwt.claim.aal',true)) $$;
  grant usage on schema auth to authenticated,anon,service_role;grant execute on all functions in schema auth to authenticated,anon,service_role;`);
   await db.exec(await readFile("supabase/migrations/001_magic.sql", "utf8"));
+  await db.exec(
+    await readFile(
+      "supabase/migrations/003_tasks_and_monthly_goals.sql",
+      "utf8",
+    ),
+  );
   await db.exec(`insert into auth.users values ('${admin}','admin@example.test',now()),('${coach}','coach@example.test',now()),('${family}','family@example.test',now()),('${other}','other@example.test',now());
  insert into profiles(id,name) values('${admin}','Admin'),('${coach}','Coach'),('${family}','Family'),('${other}','Other');
  insert into user_roles values('${admin}','admin'),('${coach}','coach'),('${family}','family'),('${other}','family');
@@ -245,4 +251,46 @@ test("removing coach revokes team access but preserves evaluations", async () =>
   );
   await as(admin, "aal2");
   assert.equal((await db.query("select * from evaluations")).rows.length, 1);
+});
+test("coach can create a team task and family can submit only for its athlete", async () => {
+  await as(admin, "aal2");
+  await cmd("coach_restore", { id: coach });
+  await cmd("coach_assign", { coach_id: coach, team_id: team });
+  await as(coach);
+  const created = await db.query<{ magic_task_command: { id: string } }>(
+    "select public.magic_task_command($1,$2::jsonb)",
+    [
+      "task_create",
+      JSON.stringify({
+        team_id: team,
+        title: "Práctica en casa",
+        instructions: "Envía una foto de la postura.",
+      }),
+    ],
+  );
+  const taskId = created.rows[0].magic_task_command.id;
+  await as(family);
+  const submitted = await db.query<{ magic_task_command: { id: string } }>(
+    "select public.magic_task_command($1,$2::jsonb)",
+    [
+      "task_media_create",
+      JSON.stringify({
+        task_id: taskId,
+        athlete_id: athlete,
+        title: "Mi práctica",
+      }),
+    ],
+  );
+  assert.ok(submitted.rows[0].magic_task_command.id);
+  await as(other);
+  await assert.rejects(
+    db.query("select public.magic_task_command($1,$2::jsonb)", [
+      "task_media_create",
+      JSON.stringify({
+        task_id: taskId,
+        athlete_id: athlete,
+        title: "Intento ajeno",
+      }),
+    ]),
+  );
 });

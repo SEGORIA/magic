@@ -15,6 +15,8 @@ export async function GET() {
       drafts: "evaluation_drafts",
       roleAssignments: "user_roles",
       media: "media",
+      tasks: "tasks",
+      monthlyGoals: "monthly_skill_goals",
       invitations: "invitations",
     };
     const out: Record<string, unknown> = { profile, roles };

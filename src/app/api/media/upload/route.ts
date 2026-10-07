@@ -12,10 +12,14 @@ export async function POST(request: Request) {
     sameOrigin(request);
     const a = await account();
     const d = await body(request);
-    const { data, error } = await a.db.rpc("magic_command", {
-      action: "media_create",
-      d,
-    });
+    const task = d.kind === "task";
+    const { data, error } = await a.db.rpc(
+      task ? "magic_task_command" : "magic_command",
+      {
+        action: task ? "task_media_create" : "media_create",
+        d,
+      },
+    );
     if (error) throw new HttpError(400, error.message);
     const path = `quarantine/${a.user.id}/${data.id}`;
     const { data: upload, error: uploadError } = await serviceDb()

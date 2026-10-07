@@ -45,8 +45,9 @@ export type Media = {
   id: string;
   owner_id: string;
   team_ids: string[];
-  kind: "family" | "official" | "avatar" | "athlete";
+  kind: "family" | "official" | "avatar" | "athlete" | "task";
   athlete_id: string | null;
+  task_id?: string | null;
   title: string;
   status: string;
   portal: boolean;
@@ -54,6 +55,23 @@ export type Media = {
   expires_at: string | null;
   created_at: string;
   reason: string | null;
+};
+export type Task = {
+  id: string;
+  team_id: string;
+  title: string;
+  instructions: string;
+  due_at: string | null;
+  active: boolean;
+  created_by: string;
+  created_at: string;
+};
+export type MonthlySkillGoal = {
+  id: string;
+  team_id: string;
+  skill_id: string;
+  month: string;
+  note: string;
 };
 export type Snapshot = {
   profile: Profile;
@@ -67,6 +85,8 @@ export type Snapshot = {
   skills: Skill[];
   evaluations: Evaluation[];
   media: Media[];
+  tasks: Task[];
+  monthlyGoals: MonthlySkillGoal[];
   devices: {
     id: string;
     name: string;
