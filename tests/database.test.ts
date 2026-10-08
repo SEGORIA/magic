@@ -37,6 +37,9 @@ before(async () => {
       "utf8",
     ),
   );
+  await db.exec(
+    await readFile("supabase/migrations/004_coach_profiles.sql", "utf8"),
+  );
   await db.exec(`insert into auth.users values ('${admin}','admin@example.test',now()),('${coach}','coach@example.test',now()),('${family}','family@example.test',now()),('${other}','other@example.test',now());
  insert into profiles(id,name) values('${admin}','Admin'),('${coach}','Coach'),('${family}','Family'),('${other}','Other');
  insert into user_roles values('${admin}','admin'),('${coach}','coach'),('${family}','family'),('${other}','family');
@@ -293,4 +296,33 @@ test("coach can create a team task and family can submit only for its athlete", 
       }),
     ]),
   );
+});
+test("coach owns their profile while administration reviews it", async () => {
+  await as(coach);
+  await db.query("select public.magic_coach_command($1,$2::jsonb)", [
+    "coach_profile_save",
+    JSON.stringify({
+      headline: "Coach de prueba",
+      bio: "Acompaño al equipo.",
+      specialty: "Tumbling",
+      phone: "3000000000",
+    }),
+  ]);
+  await as(family);
+  await assert.rejects(
+    db.query("select public.magic_coach_command($1,$2::jsonb)", [
+      "coach_profile_save",
+      JSON.stringify({ user_id: coach, headline: "Intento no autorizado" }),
+    ]),
+  );
+  await as(admin, "aal2");
+  await db.query("select public.magic_coach_command($1,$2::jsonb)", [
+    "coach_profile_review",
+    JSON.stringify({ user_id: coach, approved: true, admin_note: "Revisado" }),
+  ]);
+  const result = await db.query<{ admin_approved: boolean }>(
+    "select admin_approved from coach_profiles where user_id=$1",
+    [coach],
+  );
+  assert.equal(result.rows[0].admin_approved, true);
 });

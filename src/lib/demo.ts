@@ -150,6 +150,18 @@ export function demoSnapshot(): Snapshot {
         note: "Postura, tensión y precisión en cada repetición.",
       },
     ],
+    coachProfiles: [
+      {
+        user_id: "coach-5",
+        headline: "Coach principal · Magic Love, Joy y Stronger",
+        bio: "Acompaño a cada deportista a crecer con técnica, seguridad y alegría.",
+        phone: "",
+        specialty: "Tumbling y liderazgo de equipo",
+        admin_approved: true,
+        admin_note: "Perfil aprobado para las familias.",
+        updated_at: "2026-10-08T12:00:00Z",
+      },
+    ],
     devices: [],
     invitations: [],
   };

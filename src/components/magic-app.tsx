@@ -375,6 +375,62 @@ export default function MagicApp({
                 }
               : prev,
           );
+        else if (action === "coach_profile_save")
+          setData((prev) =>
+            prev
+              ? {
+                  ...prev,
+                  coachProfiles: [
+                    ...prev.coachProfiles.filter((p) => p.user_id !== me),
+                    {
+                      user_id: me!,
+                      headline: String(d.headline ?? ""),
+                      bio: String(d.bio ?? ""),
+                      phone: String(d.phone ?? ""),
+                      specialty: String(d.specialty ?? ""),
+                      admin_approved: false,
+                      admin_note: "Pendiente de revisión por administración.",
+                      updated_at: new Date().toISOString(),
+                    },
+                  ],
+                }
+              : prev,
+          );
+        else if (action === "coach_profile_review")
+          setData((prev) =>
+            prev
+              ? {
+                  ...prev,
+                  coachProfiles: [
+                    ...prev.coachProfiles.filter(
+                      (profile) => profile.user_id !== d.user_id,
+                    ),
+                    {
+                      user_id: String(d.user_id),
+                      headline:
+                        prev.coachProfiles.find(
+                          (profile) => profile.user_id === d.user_id,
+                        )?.headline ?? "",
+                      bio:
+                        prev.coachProfiles.find(
+                          (profile) => profile.user_id === d.user_id,
+                        )?.bio ?? "",
+                      phone:
+                        prev.coachProfiles.find(
+                          (profile) => profile.user_id === d.user_id,
+                        )?.phone ?? "",
+                      specialty:
+                        prev.coachProfiles.find(
+                          (profile) => profile.user_id === d.user_id,
+                        )?.specialty ?? "",
+                      admin_approved: !!d.approved,
+                      admin_note: String(d.admin_note ?? ""),
+                      updated_at: new Date().toISOString(),
+                    },
+                  ],
+                }
+              : prev,
+          );
         else if (action === "membership")
           setData((prev) =>
             prev
@@ -1316,14 +1372,27 @@ export default function MagicApp({
                           (r) => r.user_id === p.id && r.role === "coach",
                         ) ||
                         data.assignments.some((a) => a.coach_id === p.id) ? (
-                          <button
-                            className="btn subtle"
-                            onClick={() =>
-                              setDialog({ type: "remove-coach", id: p.id })
-                            }
-                          >
-                            Retirar como coach
-                          </button>
+                          <div className="media-actions">
+                            <button
+                              className="btn secondary"
+                              onClick={() =>
+                                setDialog({
+                                  type: "coach-profile-review",
+                                  id: p.id,
+                                })
+                              }
+                            >
+                              Ver perfil
+                            </button>
+                            <button
+                              className="btn subtle"
+                              onClick={() =>
+                                setDialog({ type: "remove-coach", id: p.id })
+                              }
+                            >
+                              Retirar como coach
+                            </button>
+                          </div>
                         ) : (
                           <button
                             className="btn secondary"
@@ -1836,7 +1905,40 @@ export default function MagicApp({
                     size="large"
                   />
                   <h2>{demo ? currentName : data.profile.name}</h2>
-                  <p>Tu espacio dentro de la familia Magic.</p>
+                  <p>
+                    {role === "coach"
+                      ? "Tu perfil profesional para acompañar a tus equipos."
+                      : "Tu espacio dentro de la familia Magic."}
+                  </p>
+                  {role === "coach" &&
+                    (() => {
+                      const coachProfile = data.coachProfiles.find(
+                        (profile) => profile.user_id === me,
+                      );
+                      return (
+                        <>
+                          {coachProfile?.headline && (
+                            <strong>{coachProfile.headline}</strong>
+                          )}
+                          {coachProfile?.specialty && (
+                            <small>{coachProfile.specialty}</small>
+                          )}
+                          <span
+                            className={`tag ${coachProfile?.admin_approved ? "green" : "pink"}`}
+                          >
+                            {coachProfile?.admin_approved
+                              ? "Perfil revisado por administración"
+                              : "Perfil pendiente de revisión"}
+                          </span>
+                          <button
+                            className="btn primary"
+                            onClick={() => setDialog({ type: "coach-profile" })}
+                          >
+                            <UserRound size={18} /> Completar mi perfil de coach
+                          </button>
+                        </>
+                      );
+                    })()}
                   <button
                     className="btn primary"
                     onClick={() => setDialog({ type: "photo" })}
@@ -1900,6 +2002,7 @@ export default function MagicApp({
             data={data}
             teamList={visibleTeams}
             isAdmin={isAdmin}
+            currentRole={role}
             me={me!}
             demo={demo}
             busy={busy}
@@ -1996,6 +2099,8 @@ function dialogTitle(type: string) {
         "task-submit": "Entregar tarea en imagen",
         "task-review": "Revisar evidencia",
         "monthly-goal": "Habilidad a lograr este mes",
+        "coach-profile": "Mi perfil de coach",
+        "coach-profile-review": "Perfil del entrenador",
         tv: "Conectar Magic TV",
         team: "Nuevo equipo",
         "athlete-settings": "Gestionar ficha",
@@ -2014,6 +2119,7 @@ type DialogProps = {
   data: Snapshot;
   teamList: Snapshot["teams"];
   isAdmin: boolean;
+  currentRole: Role;
   me: string;
   demo: boolean;
   busy: boolean;
@@ -2080,6 +2186,14 @@ function DialogContent(p: DialogProps) {
           : null,
       });
     if (dialog.type === "monthly-goal") return command("monthly_goal_save", d);
+    if (dialog.type === "coach-profile")
+      return command("coach_profile_save", d);
+    if (dialog.type === "coach-profile-review")
+      return command("coach_profile_review", {
+        user_id: dialog.id,
+        approved: d.approved === "yes",
+        admin_note: d.admin_note,
+      });
     if (dialog.type === "task-review")
       return command("task_review", {
         id: dialog.id,
@@ -2626,6 +2740,113 @@ function DialogContent(p: DialogProps) {
               placeholder="Qué queremos conseguir juntas este mes…"
             />
           </Field>
+        </>
+      )}
+      {dialog.type === "coach-profile" && (
+        <>
+          {(() => {
+            const profile = data.coachProfiles.find(
+              (item) => item.user_id === p.me,
+            );
+            return (
+              <>
+                <p className="form-note">
+                  Administración revisará tu perfil antes de marcarlo como
+                  completo. No incluyas información sensible de deportistas.
+                </p>
+                <Field label="Cómo quieres presentarte">
+                  <input
+                    name="headline"
+                    maxLength={120}
+                    defaultValue={profile?.headline ?? ""}
+                    placeholder="Ej. Coach de tumbling · Magic Power"
+                  />
+                </Field>
+                <Field label="Sobre ti">
+                  <textarea
+                    name="bio"
+                    rows={5}
+                    maxLength={1200}
+                    defaultValue={profile?.bio ?? ""}
+                    placeholder="Comparte brevemente tu experiencia y tu forma de acompañar al equipo."
+                  />
+                </Field>
+                <Field label="Especialidad o enfoque">
+                  <input
+                    name="specialty"
+                    maxLength={160}
+                    defaultValue={profile?.specialty ?? ""}
+                    placeholder="Ej. Stunts, tumbling, coreografía"
+                  />
+                </Field>
+                <Field label="Teléfono de contacto interno">
+                  <input
+                    name="phone"
+                    type="tel"
+                    maxLength={40}
+                    defaultValue={profile?.phone ?? ""}
+                    placeholder="Solo visible para administración"
+                  />
+                </Field>
+                {profile?.admin_note && (
+                  <div className="notice">
+                    <ShieldCheck size={18} />
+                    <p>
+                      <strong>Nota de administración:</strong>{" "}
+                      {profile.admin_note}
+                    </p>
+                  </div>
+                )}
+              </>
+            );
+          })()}
+        </>
+      )}
+      {dialog.type === "coach-profile-review" && (
+        <>
+          {(() => {
+            const profile = data.coachProfiles.find(
+              (item) => item.user_id === dialog.id,
+            );
+            const coach = data.profiles.find((item) => item.id === dialog.id);
+            return (
+              <>
+                <h3>{coach?.name ?? "Entrenador"}</h3>
+                <p>
+                  {profile?.headline || "Aún no ha completado su presentación."}
+                </p>
+                {profile?.bio && <p>{profile.bio}</p>}
+                {profile?.specialty && (
+                  <p>
+                    <strong>Especialidad:</strong> {profile.specialty}
+                  </p>
+                )}
+                {profile?.phone && (
+                  <p>
+                    <strong>Contacto interno:</strong> {profile.phone}
+                  </p>
+                )}
+                <Field label="Estado de revisión">
+                  <select
+                    name="approved"
+                    defaultValue={profile?.admin_approved ? "yes" : "no"}
+                  >
+                    <option value="no">Pendiente o requiere ajustes</option>
+                    <option value="yes">Perfil aprobado</option>
+                  </select>
+                </Field>
+                <Field label="Nota interna para el entrenador">
+                  <textarea
+                    name="admin_note"
+                    rows={3}
+                    maxLength={500}
+                    defaultValue={profile?.admin_note ?? ""}
+                    placeholder="Ej. Completa tu especialidad antes de publicarlo."
+                  />
+                </Field>
+              </>
+            );
+          })()}
         </>
       )}
       {dialog.type === "evaluate" && (

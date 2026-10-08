@@ -73,6 +73,16 @@ export type MonthlySkillGoal = {
   month: string;
   note: string;
 };
+export type CoachProfile = {
+  user_id: string;
+  headline: string;
+  bio: string;
+  phone: string;
+  specialty: string;
+  admin_approved: boolean;
+  admin_note: string;
+  updated_at: string;
+};
 export type Snapshot = {
   profile: Profile;
   roles: Role[];
@@ -87,6 +97,7 @@ export type Snapshot = {
   media: Media[];
   tasks: Task[];
   monthlyGoals: MonthlySkillGoal[];
+  coachProfiles: CoachProfile[];
   devices: {
     id: string;
     name: string;

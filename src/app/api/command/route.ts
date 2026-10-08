@@ -20,8 +20,16 @@ export async function POST(request: Request) {
       "monthly_goal_save",
       "task_review",
     ]);
+    const coachProfileActions = new Set([
+      "coach_profile_save",
+      "coach_profile_review",
+    ]);
     const { data, error } = await db.rpc(
-      taskActions.has(d.action) ? "magic_task_command" : "magic_command",
+      taskActions.has(d.action)
+        ? "magic_task_command"
+        : coachProfileActions.has(d.action)
+          ? "magic_coach_command"
+          : "magic_command",
       {
         action: d.action,
         d: d.data,
