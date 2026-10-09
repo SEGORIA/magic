@@ -6,12 +6,13 @@ export async function GET(request: Request) {
   const code = url.searchParams.get("code");
   const token_hash = url.searchParams.get("token_hash");
   const type = url.searchParams.get("type");
+  const otpType = type === "magiclink" ? "email" : type;
   const result = code
     ? await db.auth.exchangeCodeForSession(code)
-    : token_hash && ["invite", "recovery", "email"].includes(type ?? "")
+    : token_hash && ["invite", "recovery", "email", "magiclink"].includes(type ?? "")
       ? await db.auth.verifyOtp({
           token_hash,
-          type: type as "invite" | "recovery" | "email",
+          type: otpType as "invite" | "recovery" | "email",
         })
       : null;
   if (!result || result.error)
