@@ -41,6 +41,12 @@ before(async () => {
     await readFile("supabase/migrations/004_coach_profiles.sql", "utf8"),
   );
   await db.exec(await readFile("supabase/migrations/005_optional_mfa.sql", "utf8"));
+  await db.exec(
+    await readFile(
+      "supabase/migrations/006_admin_edit_coach_profiles.sql",
+      "utf8",
+    ),
+  );
   await db.exec(`insert into auth.users values ('${admin}','admin@example.test',now()),('${coach}','coach@example.test',now()),('${family}','family@example.test',now()),('${other}','other@example.test',now());
  insert into profiles(id,name) values('${admin}','Admin'),('${coach}','Coach'),('${family}','Family'),('${other}','Other');
  insert into user_roles values('${admin}','admin'),('${coach}','coach'),('${family}','family'),('${other}','family');
@@ -322,4 +328,25 @@ test("coach owns their profile while administration reviews it", async () => {
     [coach],
   );
   assert.equal(result.rows[0].admin_approved, true);
+});
+test("administration can edit a coach profile", async () => {
+  await as(admin);
+  await db.query("select public.magic_coach_command($1,$2::jsonb)", [
+    "coach_profile_admin_update",
+    JSON.stringify({
+      user_id: coach,
+      name: "Coach Editada",
+      headline: "Coach de prueba",
+      bio: "Acompaño al equipo.",
+      specialty: "Tumbling",
+      phone: "3000000001",
+      approved: true,
+      admin_note: "Actualizado por administración.",
+    }),
+  ]);
+  const result = await db.query<{ name: string; phone: string }>(
+    "select p.name,cp.phone from profiles p join coach_profiles cp on cp.user_id=p.id where p.id=$1",
+    [coach],
+  );
+  assert.deepEqual(result.rows[0], { name: "Coach Editada", phone: "3000000001" });
 });

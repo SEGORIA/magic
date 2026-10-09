@@ -23,6 +23,7 @@ export async function POST(request: Request) {
     const coachProfileActions = new Set([
       "coach_profile_save",
       "coach_profile_review",
+      "coach_profile_admin_update",
     ]);
     const { data, error } = await db.rpc(
       taskActions.has(d.action)

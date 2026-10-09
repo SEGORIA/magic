@@ -2193,8 +2193,13 @@ function DialogContent(p: DialogProps) {
     if (dialog.type === "coach-profile")
       return command("coach_profile_save", d);
     if (dialog.type === "coach-profile-review")
-      return command("coach_profile_review", {
+      return command("coach_profile_admin_update", {
         user_id: dialog.id,
+        name: d.name,
+        headline: d.headline,
+        bio: d.bio,
+        specialty: d.specialty,
+        phone: d.phone,
         approved: d.approved === "yes",
         admin_note: d.admin_note,
       });
@@ -2820,6 +2825,22 @@ function DialogContent(p: DialogProps) {
                   data.teams.find((team) => team.id === item.team_id)?.name ??
                   "Equipo",
               );
+            const activity = [
+              ...data.evaluations
+                .filter((item) => item.author_id === dialog.id)
+                .map((item) => ({
+                  at: item.created_at,
+                  text: `Registró un avance para ${data.athletes.find((athlete) => athlete.id === item.athlete_id)?.display_name ?? "una deportista"}`,
+                })),
+              ...data.tasks
+                .filter((item) => item.created_by === dialog.id)
+                .map((item) => ({ at: item.created_at, text: `Creó la tarea “${item.title}”` })),
+              ...data.media
+                .filter((item) => item.owner_id === dialog.id)
+                .map((item) => ({ at: item.created_at, text: `Compartió “${item.title}”` })),
+            ]
+              .sort((a, b) => b.at.localeCompare(a.at))
+              .slice(0, 6);
             return (
               <>
                 <div className="coach-profile-header">
@@ -2858,6 +2879,47 @@ function DialogContent(p: DialogProps) {
                       "Este coach aún no ha completado su presentación."}
                   </p>
                 </section>
+                <section className="coach-activity">
+                  <div className="panel-title">
+                    <div>
+                      <h3>Actividad en My Magic</h3>
+                      <p>Últimas acciones registradas por este coach.</p>
+                    </div>
+                  </div>
+                  <div className="coach-activity-stats">
+                    <span>{data.evaluations.filter((item) => item.author_id === dialog.id).length} avances</span>
+                    <span>{data.tasks.filter((item) => item.created_by === dialog.id).length} tareas</span>
+                    <span>{data.media.filter((item) => item.owner_id === dialog.id).length} fotos</span>
+                  </div>
+                  {activity.length ? (
+                    <ul className="coach-activity-list">
+                      {activity.map((item, index) => (
+                        <li key={`${item.at}-${index}`}>
+                          <span>{item.text}</span>
+                          <small>{new Date(item.at).toLocaleDateString("es-CO")}</small>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="form-note">Aún no registra actividad en My Magic.</p>
+                  )}
+                </section>
+                <h3 className="coach-edit-title">Editar perfil</h3>
+                <Field label="Nombre visible">
+                  <input name="name" required minLength={2} maxLength={120} defaultValue={coach?.name ?? ""} />
+                </Field>
+                <Field label="Presentación">
+                  <input name="headline" maxLength={120} defaultValue={profile?.headline ?? ""} />
+                </Field>
+                <Field label="Sobre el coach">
+                  <textarea name="bio" rows={4} maxLength={1200} defaultValue={profile?.bio ?? ""} />
+                </Field>
+                <Field label="Especialidad o enfoque">
+                  <input name="specialty" maxLength={160} defaultValue={profile?.specialty ?? ""} />
+                </Field>
+                <Field label="Teléfono de contacto interno">
+                  <input name="phone" type="tel" maxLength={40} defaultValue={profile?.phone ?? ""} />
+                </Field>
                 <Field label="Estado de revisión">
                   <select
                     name="approved"
