@@ -48,7 +48,7 @@ export async function POST(request: Request) {
       await db.auth.signOut();
       return json({ ok: true });
     }
-    const a = await account(false);
+    const a = await account();
     if (d.action === "password") {
       if (
         typeof d.password !== "string" ||

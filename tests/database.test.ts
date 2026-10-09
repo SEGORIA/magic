@@ -40,6 +40,7 @@ before(async () => {
   await db.exec(
     await readFile("supabase/migrations/004_coach_profiles.sql", "utf8"),
   );
+  await db.exec(await readFile("supabase/migrations/005_optional_mfa.sql", "utf8"));
   await db.exec(`insert into auth.users values ('${admin}','admin@example.test',now()),('${coach}','coach@example.test',now()),('${family}','family@example.test',now()),('${other}','other@example.test',now());
  insert into profiles(id,name) values('${admin}','Admin'),('${coach}','Coach'),('${family}','Family'),('${other}','Other');
  insert into user_roles values('${admin}','admin'),('${coach}','coach'),('${family}','family'),('${other}','family');
@@ -69,12 +70,8 @@ test("family cannot write directly or promote itself", async () => {
   );
   await assert.rejects(cmd("team_save", { name: "Hacked" }));
 });
-test("admin operations require verified MFA at database layer", async () => {
+test("admin operations work without a configured second factor", async () => {
   await as(admin);
-  await assert.rejects(
-    cmd("athlete_save", { name: "Test", display_name: "Test" }),
-  );
-  await as(admin, "aal2");
   const r = await cmd("team_save", { name: "New team" });
   assert.ok(r.rows[0].magic_command.id);
 });

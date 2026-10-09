@@ -65,7 +65,7 @@ export async function body(request: Request) {
     throw new HttpError(400, "Formato no válido");
   }
 }
-export async function account(mfa = true) {
+export async function account() {
   const db = await userDb();
   const {
     data: { user },
@@ -89,10 +89,5 @@ export async function account(mfa = true) {
   if (roleError) throw new HttpError(503, "No pudimos verificar tus permisos");
   const roles = (rows ?? []).map((r) => r.role as string);
   if (!roles.length) throw new HttpError(403, "No tienes un rol activo");
-  if (mfa && roles.includes("admin")) {
-    const { data } = await db.auth.mfa.getAuthenticatorAssuranceLevel();
-    if (data?.currentLevel !== "aal2")
-      throw new HttpError(428, "Verifica tu segundo factor en Seguridad");
-  }
   return { db, user, profile, roles };
 }

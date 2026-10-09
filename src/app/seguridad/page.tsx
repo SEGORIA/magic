@@ -33,8 +33,8 @@ export default function Security() {
       <span className="eyebrow">PROTEGEMOS TU MAGIC</span>
       <h1>Seguridad de tu cuenta</h1>
       <p>
-        Configura tu contraseña y verifica tu acceso. Administración requiere un
-        segundo factor.
+        Configura tu contraseña y, si lo deseas, añade un segundo factor para
+        proteger aún más tu acceso.
       </p>
       {message && (
         <div className="alert error" role="status">
@@ -83,7 +83,7 @@ export default function Security() {
         </Field>
         <Submit busy={busy}>Actualizar contraseña</Submit>
       </form>
-      <h2>Segundo factor</h2>
+      <h2>Segundo factor (opcional)</h2>
       {verified ? (
         <p>Tu sesión está verificada.</p>
       ) : (
