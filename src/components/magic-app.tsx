@@ -46,6 +46,8 @@ import {
 } from "@/lib/domain";
 import { Avatar, Empty, Field, Modal, ProgressBar, Submit } from "./ui";
 
+let snapshotCache: Snapshot | null = null;
+
 const sectionNames: Record<string, string> = {
   inicio: "Vista general",
   deportistas: "Deportistas",
@@ -70,7 +72,7 @@ export default function MagicApp({
   const demo = area === "demo",
     router = useRouter();
   const [data, setData] = useState<Snapshot | null>(
-      demo ? demoSnapshot() : null,
+      () => (demo ? demoSnapshot() : snapshotCache),
     ),
     [error, setError] = useState(""),
     [toast, setToast] = useState("");
@@ -108,6 +110,7 @@ export default function MagicApp({
         );
         return;
       }
+      snapshotCache = d;
       setData(d);
       setError("");
     } catch (e) {
@@ -632,6 +635,7 @@ export default function MagicApp({
           </Link>
           <button
             onClick={async () => {
+              snapshotCache = null;
               if (!demo)
                 await fetch("/api/auth", {
                   method: "POST",
