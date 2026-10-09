@@ -933,6 +933,49 @@ textarea::placeholder {
   display: block;
   font-size: 11px;
 }
+.coach-profile-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+}
+.coach-profile-header > div {
+  flex: 1;
+}
+.coach-profile-header h3,
+.coach-profile-header p,
+.coach-profile-details p,
+.coach-profile-bio p {
+  margin: 0;
+}
+.coach-profile-header p,
+.coach-profile-details p,
+.coach-profile-bio p {
+  color: #80687a;
+  font-size: 12px;
+}
+.coach-profile-details {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 16px 0;
+}
+.coach-profile-details > div,
+.coach-profile-bio {
+  padding: 12px;
+  border-radius: 10px;
+  background: #fcf8fa;
+}
+.coach-profile-details strong,
+.coach-profile-bio strong {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 11px;
+}
+.coach-profile-bio {
+  margin-bottom: 16px;
+}
 .space-top {
   margin-top: 22px;
 }
@@ -1860,6 +1903,9 @@ legend {
   }
   .person-row .btn {
     margin-left: 49px;
+  }
+  .coach-profile-details {
+    grid-template-columns: 1fr;
   }
   .athlete-hero {
     gap: 15px;

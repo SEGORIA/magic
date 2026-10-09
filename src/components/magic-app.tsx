@@ -2813,23 +2813,51 @@ function DialogContent(p: DialogProps) {
               (item) => item.user_id === dialog.id,
             );
             const coach = data.profiles.find((item) => item.id === dialog.id);
+            const coachTeams = data.assignments
+              .filter((item) => item.coach_id === dialog.id)
+              .map(
+                (item) =>
+                  data.teams.find((team) => team.id === item.team_id)?.name ??
+                  "Equipo",
+              );
             return (
               <>
-                <h3>{coach?.name ?? "Entrenador"}</h3>
-                <p>
-                  {profile?.headline || "Aún no ha completado su presentación."}
-                </p>
-                {profile?.bio && <p>{profile.bio}</p>}
-                {profile?.specialty && (
+                <div className="coach-profile-header">
+                  <Avatar name={coach?.name ?? "Entrenador"} id={coach?.avatar_id} />
+                  <div>
+                    <h3>{coach?.name ?? "Entrenador"}</h3>
+                    <p>
+                      {profile?.headline ||
+                        "Aún no ha completado su presentación."}
+                    </p>
+                  </div>
+                  <span
+                    className={`tag ${profile?.admin_approved ? "pink" : ""}`}
+                  >
+                    {profile?.admin_approved ? "Perfil aprobado" : "Pendiente"}
+                  </span>
+                </div>
+                <section className="coach-profile-details">
+                  <div>
+                    <strong>Equipos</strong>
+                    <p>{coachTeams.join(" · ") || "Sin equipos asignados"}</p>
+                  </div>
+                  <div>
+                    <strong>Especialidad</strong>
+                    <p>{profile?.specialty || "Pendiente de completar"}</p>
+                  </div>
+                  <div>
+                    <strong>Contacto interno</strong>
+                    <p>{profile?.phone || "Pendiente de completar"}</p>
+                  </div>
+                </section>
+                <section className="coach-profile-bio">
+                  <strong>Sobre el coach</strong>
                   <p>
-                    <strong>Especialidad:</strong> {profile.specialty}
+                    {profile?.bio ||
+                      "Este coach aún no ha completado su presentación."}
                   </p>
-                )}
-                {profile?.phone && (
-                  <p>
-                    <strong>Contacto interno:</strong> {profile.phone}
-                  </p>
-                )}
+                </section>
                 <Field label="Estado de revisión">
                   <select
                     name="approved"
