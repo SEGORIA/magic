@@ -36,7 +36,7 @@ export async function POST(request: Request) {
       if (typeof d.email !== "string" || d.email.length > 254)
         throw new HttpError(400, "Correo inválido");
       await db.auth.resetPasswordForEmail(d.email, {
-        redirectTo: `${process.env.APP_URL}/auth/callback?next=/seguridad`,
+        redirectTo: `${process.env.APP_URL}/auth/callback`,
       });
       return json({
         ok: true,
