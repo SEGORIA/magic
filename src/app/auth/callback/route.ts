@@ -6,15 +6,18 @@ export async function GET(request: Request) {
   const code = url.searchParams.get("code");
   const token_hash = url.searchParams.get("token_hash");
   const type = url.searchParams.get("type");
-  const otpType = type === "magiclink" ? "email" : type;
+  if (
+    token_hash &&
+    ["invite", "recovery", "email", "magiclink"].includes(type ?? "")
+  ) {
+    const activation = new URL("/activar", process.env.APP_URL!);
+    activation.searchParams.set("token_hash", token_hash);
+    activation.searchParams.set("type", type!);
+    return NextResponse.redirect(activation);
+  }
   const result = code
     ? await db.auth.exchangeCodeForSession(code)
-    : token_hash && ["invite", "recovery", "email", "magiclink"].includes(type ?? "")
-      ? await db.auth.verifyOtp({
-          token_hash,
-          type: otpType as "invite" | "recovery" | "email",
-        })
-      : null;
+    : null;
   if (!result || result.error)
     return NextResponse.redirect(
       new URL("/acceso?error=expired", process.env.APP_URL!),

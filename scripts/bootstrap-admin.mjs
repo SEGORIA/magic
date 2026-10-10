@@ -37,15 +37,12 @@ if ((count ?? 0) > 0) {
   process.exit(1);
 }
 
-const redirectTo = new URL(
-  "/acceso",
-  process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000",
-).toString();
-const { data, error: inviteError } =
-  await supabase.auth.admin.inviteUserByEmail(email, {
-    redirectTo,
-    data: { name },
-  });
+const appUrl = process.env.APP_URL ?? "http://localhost:3000";
+const { data, error: inviteError } = await supabase.auth.admin.generateLink({
+  type: "magiclink",
+  email,
+  options: { data: { name } },
+});
 
 if (inviteError || !data.user)
   throw inviteError ?? new Error("Supabase no devolvió el usuario invitado");
@@ -65,6 +62,9 @@ try {
   throw error;
 }
 
-console.log(
-  `Invitación administrativa enviada a ${email}. Activa MFA al ingresar por primera vez.`,
-);
+const tokenHash = data.properties.hashed_token;
+if (!tokenHash) throw new Error("Supabase no devolvió un enlace de activación");
+const activationUrl = new URL("/activar", appUrl);
+activationUrl.searchParams.set("token_hash", tokenHash);
+activationUrl.searchParams.set("type", data.properties.verification_type);
+console.log(`Comparte este enlace de activación con ${email}:\n${activationUrl}`);

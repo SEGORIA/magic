@@ -50,16 +50,24 @@ export async function POST(request: Request) {
       );
     }
     if (d.action === "invite" && roles.includes("admin")) {
-      const { error: inviteError } =
-        await serviceDb().auth.admin.inviteUserByEmail(d.data.email, {
-          redirectTo: `${process.env.APP_URL}/auth/callback`,
+      const invite = d.data as { email: string; name: string };
+      const { data: link, error: inviteError } =
+        await serviceDb().auth.admin.generateLink({
+          type: "magiclink",
+          email: invite.email,
+          options: { data: { name: invite.name } },
         });
-      if (inviteError)
-        return json({
-          ...data,
-          warning:
-            "Invitación registrada. No se pudo enviar el correo; revisa el servicio de correo y vuelve a invitar.",
-        });
+      if (inviteError || !link?.properties.hashed_token)
+        throw new HttpError(
+          502,
+          "La invitación se guardó, pero no pudimos crear el enlace. Intenta de nuevo.",
+        );
+      const appUrl = process.env.APP_URL;
+      if (!appUrl) throw new HttpError(503, "Falta configurar el acceso de Magic.");
+      const activation = new URL("/activar", appUrl);
+      activation.searchParams.set("token_hash", link.properties.hashed_token);
+      activation.searchParams.set("type", link.properties.verification_type);
+      return json({ ...data, activation_url: activation.toString() });
     }
     return json(data);
   } catch (e) {

@@ -11,8 +11,11 @@ export async function proxy(request: NextRequest) {
   if (
     !process.env.NEXT_PUBLIC_SUPABASE_URL ||
     !process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
-  )
+  ) {
+    if (request.nextUrl.pathname === "/activar")
+      response.headers.set("X-Robots-Tag", "noindex, nofollow");
     return response;
+  }
   const db = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
@@ -38,6 +41,8 @@ export async function proxy(request: NextRequest) {
   );
   await db.auth.getUser();
   response.headers.set("Cache-Control", "private, no-store");
+  if (request.nextUrl.pathname === "/activar")
+    response.headers.set("X-Robots-Tag", "noindex, nofollow");
   return response;
 }
 export const config = {
@@ -49,6 +54,7 @@ export const config = {
     "/magic-tv",
     "/api/:path*",
     "/acceso",
+    "/activar",
     "/seguridad",
     "/auth/:path*",
   ],

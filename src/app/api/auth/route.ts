@@ -61,44 +61,6 @@ export async function POST(request: Request) {
         throw new HttpError(400, "No fue posible cambiar la contraseña");
       return json({ ok: true });
     }
-    if (d.action === "mfa-status") {
-      const { data } = await a.db.auth.mfa.listFactors();
-      const { data: level } =
-        await a.db.auth.mfa.getAuthenticatorAssuranceLevel();
-      return json({
-        factors: data?.totp
-          .filter((f) => f.status === "verified")
-          .map((f) => ({ id: f.id, name: f.friendly_name })),
-        level: level?.currentLevel,
-      });
-    }
-    if (d.action === "mfa-enroll") {
-      const { data: factors } = await a.db.auth.mfa.listFactors();
-      for (const f of factors?.all ?? [])
-        if (f.status === "unverified")
-          await a.db.auth.mfa.unenroll({ factorId: f.id });
-      const { data, error } = await a.db.auth.mfa.enroll({
-        factorType: "totp",
-        friendlyName: "Magic Admin",
-      });
-      if (error || !data)
-        throw new HttpError(400, "No fue posible configurar el segundo factor");
-      return json({
-        id: data.id,
-        qr: data.totp.qr_code,
-        secret: data.totp.secret,
-      });
-    }
-    if (d.action === "mfa-verify") {
-      if (!/^\d{6}$/.test(d.code ?? ""))
-        throw new HttpError(400, "Ingresa el código de seis dígitos");
-      const { error } = await a.db.auth.mfa.challengeAndVerify({
-        factorId: d.id,
-        code: d.code,
-      });
-      if (error) throw new HttpError(400, "Código inválido o vencido");
-      return json({ ok: true });
-    }
     throw new HttpError(400, "Operación inválida");
   } catch (e) {
     return failure(e);

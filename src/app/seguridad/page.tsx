@@ -1,15 +1,11 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { Field, Submit } from "@/components/ui";
 export const dynamic = "force-dynamic";
 export default function Security() {
   const [busy, setBusy] = useState(false),
-    [message, setMessage] = useState(""),
-    [factor, setFactor] = useState(""),
-    [qr, setQr] = useState(""),
-    [secret, setSecret] = useState(""),
-    [verified, setVerified] = useState(false);
+    [message, setMessage] = useState("");
   async function send(d: Record<string, unknown>) {
     const r = await fetch("/api/auth", {
       method: "POST",
@@ -20,21 +16,12 @@ export default function Security() {
     if (!r.ok) throw new Error(data.error);
     return data;
   }
-  useEffect(() => {
-    send({ action: "mfa-status" })
-      .then((d) => {
-        setFactor(d.factors?.[0]?.id ?? "");
-        setVerified(d.level === "aal2");
-      })
-      .catch((e) => setMessage(e.message));
-  }, []);
   return (
     <main className="security-panel">
       <span className="eyebrow">PROTEGEMOS TU MAGIC</span>
       <h1>Seguridad de tu cuenta</h1>
       <p>
-        Configura tu contraseña y, si lo deseas, añade un segundo factor para
-        proteger aún más tu acceso.
+        Actualiza tu contraseña cuando lo necesites para proteger tu acceso.
       </p>
       {message && (
         <div className="alert error" role="status">
@@ -83,87 +70,6 @@ export default function Security() {
         </Field>
         <Submit busy={busy}>Actualizar contraseña</Submit>
       </form>
-      <h2>Segundo factor (opcional)</h2>
-      {verified ? (
-        <p>Tu sesión está verificada.</p>
-      ) : (
-        <>
-          {!factor && (
-            <button
-              className="btn secondary space-top"
-              disabled={busy}
-              onClick={async () => {
-                setBusy(true);
-                try {
-                  const d = await send({ action: "mfa-enroll" });
-                  setFactor(d.id);
-                  setQr(d.qr);
-                  setSecret(d.secret);
-                } catch (e) {
-                  setMessage((e as Error).message);
-                } finally {
-                  setBusy(false);
-                }
-              }}
-            >
-              Configurar aplicación autenticadora
-            </button>
-          )}
-          {qr && (
-            <>
-              <p>Escanea este código con tu aplicación autenticadora.</p>
-              <img
-                className="qr"
-                src={
-                  qr.startsWith("data:")
-                    ? qr
-                    : `data:image/svg+xml,${encodeURIComponent(qr)}`
-                }
-                alt="Código QR para configurar segundo factor"
-              />
-              <p>
-                Si no puedes escanear: <code>{secret}</code>
-              </p>
-            </>
-          )}
-          {factor && (
-            <form
-              onSubmit={async (e) => {
-                e.preventDefault();
-                setBusy(true);
-                const f = new FormData(e.currentTarget);
-                try {
-                  await send({
-                    action: "mfa-verify",
-                    id: factor,
-                    code: f.get("code"),
-                  });
-                  setVerified(true);
-                  setSecret("");
-                  setQr("");
-                  setMessage("Segundo factor verificado. Ya puedes continuar.");
-                } catch (e) {
-                  setMessage((e as Error).message);
-                } finally {
-                  setBusy(false);
-                }
-              }}
-            >
-              <Field label="Código de seis dígitos">
-                <input
-                  name="code"
-                  inputMode="numeric"
-                  autoComplete="one-time-code"
-                  pattern="[0-9]{6}"
-                  required
-                  maxLength={6}
-                />
-              </Field>
-              <Submit busy={busy}>Verificar acceso</Submit>
-            </form>
-          )}
-        </>
-      )}
       <Link className="btn primary full space-top" href="/admin">
         Continuar a My Magic
       </Link>

@@ -85,7 +85,8 @@ export default function MagicApp({
     [dialog, setDialog] = useState<DialogState | null>(null),
     [busy, setBusy] = useState(false),
     [mobile, setMobile] = useState(false),
-    [link, setLink] = useState("");
+    [link, setLink] = useState(""),
+    [invitationLink, setInvitationLink] = useState("");
   async function load() {
     if (demo) return;
     try {
@@ -487,6 +488,11 @@ export default function MagicApp({
         const result = await res.json();
         if (!res.ok) throw new Error(result.error);
         await load();
+        if (typeof result.activation_url === "string") {
+          setInvitationLink(result.activation_url);
+          setToast("Invitación creada. Comparte el enlace antes de que venza.");
+          return;
+        }
         setToast(
           result.warning ?? "Listo. Los cambios se guardaron correctamente.",
         );
@@ -970,7 +976,10 @@ export default function MagicApp({
                 {section === "entrenadores" && isAdmin && (
                   <button
                     className="btn primary"
-                    onClick={() => setDialog({ type: "invite" })}
+                    onClick={() => {
+                      setInvitationLink("");
+                      setDialog({ type: "invite" });
+                    }}
                   >
                     <Plus size={18} />
                     Invitar persona
@@ -1963,7 +1972,7 @@ export default function MagicApp({
                     </button>
                   )}
                   <Link href="/seguridad" className="btn secondary">
-                    Contraseña y segundo factor
+                    Contraseña y seguridad
                   </Link>
                 </section>
               )}
@@ -2021,6 +2030,7 @@ export default function MagicApp({
             }}
             tvLink={link}
             setTvLink={setLink}
+            invitationLink={invitationLink}
             setData={setData}
           />
         </Modal>
@@ -2134,6 +2144,7 @@ type DialogProps = {
   done: (s: string) => Promise<void>;
   tvLink: string;
   setTvLink: (s: string) => void;
+  invitationLink: string;
   setData: React.Dispatch<React.SetStateAction<Snapshot | null>>;
 };
 function DialogContent(p: DialogProps) {
@@ -2159,6 +2170,49 @@ function DialogContent(p: DialogProps) {
       {p.error}
     </div>
   );
+  if (dialog.type === "invite" && p.invitationLink) {
+    return (
+      <div className="modal-body">
+        <p>
+          Comparte este enlace directamente con la persona invitada. Es personal,
+          de un solo uso y vence pronto.
+        </p>
+        <Field label="Enlace de activación">
+          <input
+            value={p.invitationLink}
+            readOnly
+            onFocus={(e) => e.currentTarget.select()}
+          />
+        </Field>
+        {formError}
+        <div className="form-actions">
+          <button
+            className="btn primary"
+            type="button"
+            onClick={async () => {
+              try {
+                await navigator.clipboard.writeText(p.invitationLink);
+                await p.done("Enlace copiado. Ya puedes compartirlo.");
+              } catch {
+                p.setError(
+                  "Selecciona y copia el enlace manualmente antes de cerrar.",
+                );
+              }
+            }}
+          >
+            <Copy size={17} /> Copiar enlace
+          </button>
+          <button
+            className="btn secondary"
+            type="button"
+            onClick={() => p.done("Invitación creada.")}
+          >
+            Cerrar
+          </button>
+        </div>
+      </div>
+    );
+  }
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const f = new FormData(e.currentTarget);
@@ -2526,8 +2580,8 @@ function DialogContent(p: DialogProps) {
             </select>
           </Field>
           <p className="form-note">
-            Recibirá un enlace para configurar su cuenta. Las asignaciones se
-            realizan después de aceptar.
+            Crearás un enlace personal para compartir directamente. Las
+            asignaciones se realizan después de aceptar.
           </p>
         </>
       )}
@@ -3391,7 +3445,7 @@ function DialogContent(p: DialogProps) {
                 : dialog.type === "tv"
                   ? "Generar enlace"
                   : dialog.type === "invite"
-                    ? "Enviar invitación"
+                    ? "Crear enlace"
                     : dialog.type === "task-submit"
                       ? "Enviar evidencia"
                       : dialog.type === "upload"
