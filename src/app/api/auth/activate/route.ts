@@ -10,7 +10,9 @@ export async function POST(request: NextRequest) {
       typeof d.token_hash !== "string" ||
       !/^[a-f0-9]{32,256}$/i.test(d.token_hash) ||
       typeof d.type !== "string" ||
-      !["invite", "recovery", "email", "magiclink"].includes(d.type)
+      !["signup", "invite", "recovery", "email", "magiclink"].includes(
+        d.type,
+      )
     )
       throw new HttpError(400, "El enlace de activación no es válido.");
     if (

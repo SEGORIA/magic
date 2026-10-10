@@ -13,7 +13,7 @@ function ActivationForm() {
   const token_hash = params.get("token_hash") ?? "";
   const type = params.get("type") ?? "";
   const valid = /^[a-f0-9]{32,256}$/i.test(token_hash) &&
-    ["invite", "recovery", "email", "magiclink"].includes(type);
+    ["signup", "invite", "recovery", "email", "magiclink"].includes(type);
 
   async function activate() {
     if (!valid) return setMessage("El enlace de activación no es válido.");

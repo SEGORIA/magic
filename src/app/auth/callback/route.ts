@@ -8,7 +8,7 @@ export async function GET(request: Request) {
   const type = url.searchParams.get("type");
   if (
     token_hash &&
-    ["invite", "recovery", "email", "magiclink"].includes(type ?? "")
+    ["signup", "invite", "recovery", "email", "magiclink"].includes(type ?? "")
   ) {
     const activation = new URL("/activar", process.env.APP_URL!);
     activation.searchParams.set("token_hash", token_hash);
